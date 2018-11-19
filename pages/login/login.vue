@@ -3,11 +3,11 @@
         <view class="input-group">
             <view class="input-row border">
                 <text class="title">账号：</text>
-                <uni-input class="uni-input" type="text" clearable focus v-model="account" placeholder="请输入账号"></uni-input>
+                <m-input class="m-input" type="text" clearable focus v-model="account" placeholder="请输入账号"></m-input>
             </view>
             <view class="input-row">
                 <text class="title">密码：</text>
-                <uni-input type="password" displayable v-model="password" placeholder="请输入密码"></uni-input>
+                <m-input type="password" displayable v-model="password" placeholder="请输入密码"></m-input>
             </view>
         </view>
         <view class="btn-row">
@@ -32,11 +32,11 @@
         mapState,
         mapMutations
     } from 'vuex'
-    import uniInput from '../../components/uni-input.vue'
+    import mInput from '../../components/m-input.vue'
 
     export default {
         components: {
-            uniInput
+            mInput
         },
         data() {
             return {
@@ -171,7 +171,7 @@
 
     .action-row navigator {
         color: #007aff;
-        padding: 0 20px;
+        padding: 0 20upx;
     }
 
     .oauth-row {
@@ -185,17 +185,17 @@
     }
 
     .oauth-image {
-        width: 100px;
-        height: 100px;
-        border: 1px solid #dddddd;
-        border-radius: 100px;
-        margin: 0 40px;
+        width: 100upx;
+        height: 100upx;
+        border: 1upx solid #dddddd;
+        border-radius: 100upx;
+        margin: 0 40upx;
         background-color: #ffffff;
     }
 
     .oauth-image image {
-        width: 60px;
-        height: 60px;
-        margin: 20px;
+        width: 60upx;
+        height: 60upx;
+        margin: 20upx;
     }
 </style>

@@ -1,19 +1,19 @@
 <template>
-    <view class="uni-input-view">
-        <input :focus="focus_" :type="inputType" :value="value" @input="onInput" class="uni-input-input" :placeholder="placeholder"
+    <view class="m-input-view">
+        <input :focus="focus_" :type="inputType" :value="value" @input="onInput" class="m-input-input" :placeholder="placeholder"
             :password="type==='password'&&!showPassword" @focus="onFocus" @blur="onBlur" />
         <!-- 优先显示密码可见按钮 -->
-        <uni-icon v-if="clearable_&&!displayable_&&value.length" color="#666666" type="clear" size="20" @click="clear"></uni-icon>
-        <uni-icon v-if="displayable_" :color="showPassword?'#666666':'#cccccc'" type="eye" size="20" @click="display"></uni-icon>
+        <m-icon v-if="clearable_&&!displayable_&&value.length" color="#666666" type="clear" size="20" @click="clear"></m-icon>
+        <m-icon v-if="displayable_" :color="showPassword?'#666666':'#cccccc'" type="eye" size="20" @click="display"></m-icon>
     </view>
 </template>
 
 <script>
-    import uniIcon from './uni-icon/uni-icon.vue'
+    import mIcon from './m-icon/m-icon.vue'
 
     export default {
         components: {
-            uniIcon
+            mIcon
         },
         props: {
             /**
@@ -104,7 +104,7 @@
 </script>
 
 <style>
-    .uni-input-view {
+    .m-input-view {
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -113,7 +113,7 @@
         padding: 0 10rpx;
     }
 
-    .uni-input-input {
+    .m-input-input {
         flex: 1;
         width: 100%;
     }

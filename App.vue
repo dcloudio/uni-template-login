@@ -26,12 +26,12 @@
         flex: 1;
         flex-direction: column;
         background-color: #efeff4;
-        padding: 20px;
+        padding: 20upx;
     }
 
     .input-group {
         background-color: #ffffff;
-        margin-top: 40px;
+        margin-top: 40upx;
         position: relative;
     }
 
@@ -40,7 +40,7 @@
         right: 0;
         top: 0;
         left: 0;
-        height: 1px;
+        height: 1upx;
         content: '';
         -webkit-transform: scaleY(.5);
         transform: scaleY(.5);
@@ -52,7 +52,7 @@
         right: 0;
         bottom: 0;
         left: 0;
-        height: 1px;
+        height: 1upx;
         content: '';
         -webkit-transform: scaleY(.5);
         transform: scaleY(.5);
@@ -67,19 +67,19 @@
 
     .input-row .title {
         width: 20%;
-        height: 50px;
-        min-height: 50px;
-        padding: 15px 0;
-        padding-left: 30px;
-        line-height: 50px;
+        height: 50upx;
+        min-height: 50upx;
+        padding: 15upx 0;
+        padding-left: 30upx;
+        line-height: 50upx;
     }
 
     .input-row.border::after {
         position: absolute;
         right: 0;
         bottom: 0;
-        left: 15px;
-        height: 1px;
+        left: 15upx;
+        height: 1upx;
         content: '';
         -webkit-transform: scaleY(.5);
         transform: scaleY(.5);
@@ -87,8 +87,8 @@
     }
 
     .btn-row {
-        margin-top: 50px;
-        padding: 20px;
+        margin-top: 50upx;
+        padding: 20upx;
     }
 
     button.primary {
