@@ -3,8 +3,12 @@
         <input :focus="focus_" :type="inputType" :value="value" @input="onInput" class="m-input-input" :placeholder="placeholder"
             :password="type==='password'&&!showPassword" @focus="onFocus" @blur="onBlur" />
         <!-- 优先显示密码可见按钮 -->
-        <m-icon v-if="clearable_&&!displayable_&&value.length" color="#666666" type="clear" size="20" @click="clear"></m-icon>
-        <m-icon v-if="displayable_" :color="showPassword?'#666666':'#cccccc'" type="eye" size="20" @click="display"></m-icon>
+        <view v-if="clearable_&&!displayable_&&value.length" class="m-input-icon">
+            <m-icon color="#666666" type="clear" size="20" @click="clear"></m-icon>
+        </view>
+        <view v-if="displayable_" class="m-input-icon">
+            <m-icon :color="showPassword?'#666666':'#cccccc'" type="eye" size="20" @click="display"></m-icon>
+        </view>
     </view>
 </template>
 
@@ -116,5 +120,9 @@
     .m-input-input {
         flex: 1;
         width: 100%;
+    }
+    
+    .m-input-icon{
+        width: 20px;
     }
 </style>
