@@ -77,7 +77,12 @@
                  * 使用 absolute 定位，并且设置 bottom 值进行定位。软键盘弹出时，底部会因为窗口变化而被顶上来。
                  * 反向使用 top 进行定位，可以避免此问题。
                  */
-                this.positionTop = uni.getSystemInfoSync().windowHeight - 100;
+                // #ifdef APP-PLUS
+				this.positionTop = uni.getSystemInfoSync().windowHeight - 100 - 44;
+				// #endif
+				// #ifndef APP-PLUS
+				this.positionTop = uni.getSystemInfoSync().windowHeight - 100;
+				// #endif
             },
             bindLogin() {
                 /**
