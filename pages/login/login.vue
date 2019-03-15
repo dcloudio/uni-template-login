@@ -155,7 +155,7 @@
 
             }
         },
-        onLoad() {
+        onReady() {
             this.initPosition();
             this.initProvider();
         }
