@@ -87,7 +87,7 @@
 		},
 		methods: {
 			clear() {
-				this.value = ''
+				this.$emit('input', '')
 			},
 			display() {
 				this.showPassword = !this.showPassword
