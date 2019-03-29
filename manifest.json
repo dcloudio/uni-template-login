@@ -6,7 +6,6 @@
     "versionCode": "100",
 	"transformPx": false,
     "app-plus": { /* 5+App特有相关 */
-		"v8": true,
         "modules": { /* 模块配置 */
 
         },
