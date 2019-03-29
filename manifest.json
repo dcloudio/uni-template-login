@@ -5,7 +5,6 @@
     "versionName": "1.0.0",
     "versionCode": "100",
 	"transformPx": false,
-	"usingComponents": true,
     "app-plus": { /* 5+App特有相关 */
 		"v8": true,
         "modules": { /* 模块配置 */
@@ -29,7 +28,8 @@
     "mp-weixin": { /* 小程序特有相关 */
 		"appid": "",
 		"setting" : {
-			"urlCheck" : true
-		}
+			"urlCheck" : false
+		},
+		"usingComponents": true
     }
 }
