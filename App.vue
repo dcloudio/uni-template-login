@@ -34,6 +34,13 @@
 		display: flex;
 	}
 
+	/* 原生组件模式下需要注意组件外部样式 */
+	custom-component {
+		width: 100%;
+		min-height: 100%;
+		display: flex;
+	}
+
 	/* #endif */
 
 	/* 原生组件模式下需要注意组件外部样式 */
