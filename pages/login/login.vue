@@ -171,7 +171,7 @@
 
     .action-row navigator {
         color: #007aff;
-        padding: 0 20upx;
+        padding: 0 10px;
     }
 
     .oauth-row {
@@ -185,17 +185,17 @@
     }
 
     .oauth-image {
-        width: 100upx;
-        height: 100upx;
-        border: 1upx solid #dddddd;
-        border-radius: 100upx;
-        margin: 0 40upx;
+        width: 50px;
+        height: 50px;
+        border: 1px solid #dddddd;
+        border-radius: 50px;
+        margin: 0 20px;
         background-color: #ffffff;
     }
 
     .oauth-image image {
-        width: 60upx;
-        height: 60upx;
-        margin: 20upx;
+        width: 30px;
+        height: 30px;
+        margin: 10px;
     }
 </style>

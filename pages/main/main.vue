@@ -68,16 +68,16 @@
 
     .title {
         color: #8f8f94;
-        margin-top: 50upx;
+        margin-top: 25px;
     }
 
     .ul {
-        font-size: 30upx;
+        font-size: 15px;
         color: #8f8f94;
-        margin-top: 50upx;
+        margin-top: 25px;
     }
 
     .ul>view {
-        line-height: 50upx;
+        line-height: 25px;
     }
 </style>

@@ -4,10 +4,10 @@
 		 :password="type==='password'&&!showPassword" @focus="onFocus" @blur="onBlur" />
 		<!-- 优先显示密码可见按钮 -->
 		<view v-if="clearable_&&!displayable_&&value.length" class="m-input-icon">
-			<m-icon color="#666666" type="clear" size="20" @click="clear"></m-icon>
+			<m-icon color="#666666" type="clear" @click="clear"></m-icon>
 		</view>
 		<view v-if="displayable_" class="m-input-icon">
-			<m-icon :color="showPassword?'#666666':'#cccccc'" type="eye" size="20" @click="display"></m-icon>
+			<m-icon :style="{color:showPassword?'#666666':'#cccccc'}" type="eye" @click="display"></m-icon>
 		</view>
 	</view>
 </template>
@@ -109,20 +109,26 @@
 
 <style>
 	.m-input-view {
-		display: flex;
+		display: inline-flex;
 		flex-direction: row;
 		align-items: center;
-		width: 100%;
+		/* width: 100%; */
 		flex: 1;
-		padding: 0 10rpx;
+		padding: 0 10px;
 	}
 
 	.m-input-input {
 		flex: 1;
 		width: 100%;
+		min-height: 100%;
+		line-height: inherit;
+		background-color: rgba(0, 0, 0, 0);
 	}
 
 	.m-input-icon {
 		width: 20px;
+		font-size: 20px;
+		line-height: 20px;
+		color: #666666;
 	}
 </style>

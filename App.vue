@@ -13,6 +13,9 @@
 </script>
 
 <style>
+	/* 头条小程序需要把 iconfont 样式放到组件外 */
+	@import "components/m-icon/m-icon.css";
+
 	/*每个页面公共css */
 	page {
 		min-height: 100%;
@@ -51,8 +54,9 @@
 	/* 原生组件模式下需要注意组件外部样式 */
 	m-input {
 		width: 100%;
-		min-height: 100%;
+		/* min-height: 100%; */
 		display: flex;
+		flex: 1;
 	}
 
 	.content {
@@ -60,12 +64,12 @@
 		flex: 1;
 		flex-direction: column;
 		background-color: #efeff4;
-		padding: 20upx;
+		padding: 10px;
 	}
 
 	.input-group {
 		background-color: #ffffff;
-		margin-top: 40upx;
+		margin-top: 20px;
 		position: relative;
 	}
 
@@ -74,7 +78,7 @@
 		right: 0;
 		top: 0;
 		left: 0;
-		height: 1upx;
+		height: 1px;
 		content: '';
 		-webkit-transform: scaleY(.5);
 		transform: scaleY(.5);
@@ -86,7 +90,7 @@
 		right: 0;
 		bottom: 0;
 		left: 0;
-		height: 1upx;
+		height: 1px;
 		content: '';
 		-webkit-transform: scaleY(.5);
 		transform: scaleY(.5);
@@ -97,23 +101,21 @@
 		display: flex;
 		flex-direction: row;
 		position: relative;
+		font-size: 18px;
+		line-height: 40px;
 	}
 
 	.input-row .title {
-		width: 20%;
-		height: 50upx;
-		min-height: 50upx;
-		padding: 15upx 0;
-		padding-left: 30upx;
-		line-height: 50upx;
+		width: 72px;
+		padding-left: 15px;
 	}
 
 	.input-row.border::after {
 		position: absolute;
 		right: 0;
 		bottom: 0;
-		left: 15upx;
-		height: 1upx;
+		left: 8px;
+		height: 1px;
 		content: '';
 		-webkit-transform: scaleY(.5);
 		transform: scaleY(.5);
@@ -121,8 +123,8 @@
 	}
 
 	.btn-row {
-		margin-top: 50upx;
-		padding: 20upx;
+		margin-top: 25px;
+		padding: 10px;
 	}
 
 	button.primary {

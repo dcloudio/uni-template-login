@@ -7,7 +7,7 @@
 
 .m-icon {
 	font-family: uniicons;
-	font-size: 48upx;
+	font-size: 24px;
 	font-weight: normal;
 	font-style: normal;
 	line-height: 1;
@@ -373,5 +373,5 @@
 }
 
 .m-icon-scan:before {
-    content: "\e612";
+	content: "\e612";
 }
