@@ -21,6 +21,9 @@
 		<view class="oauth-row" v-if="hasProvider" v-bind:style="{top: positionTop + 'px'}">
 			<view class="oauth-image" v-for="provider in providerList" :key="provider.value">
 				<image :src="provider.image" @tap="oauth(provider.value)"></image>
+				<!-- #ifdef MP-WEIXIN -->
+				<button v-if="!isDevtools" open-type="getUserInfo" @getuserinfo="getUserInfo"></button>
+				<!-- #endif -->
 			</view>
 		</view>
 	</view>
@@ -44,7 +47,8 @@
 				hasProvider: false,
 				account: '',
 				password: '',
-				positionTop: 0
+				positionTop: 0,
+				isDevtools: false,
 			}
 		},
 		computed: mapState(['forcedLogin']),
@@ -131,6 +135,12 @@
 								 * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。
 								 */
 								this.toMain(infoRes.userInfo.nickName);
+							},
+							fail() {
+								uni.showToast({
+									icon: 'none',
+									title: '登陆失败'
+								});
 							}
 						});
 					},
@@ -138,6 +148,18 @@
 						console.error('授权登录失败：' + JSON.stringify(err));
 					}
 				});
+			},
+			getUserInfo({
+				detail
+			}) {
+				if (detail.userInfo) {
+					this.toMain(detail.userInfo.nickName);
+				} else {
+					uni.showToast({
+						icon: 'none',
+						title: '登陆失败'
+					});
+				}
 			},
 			toMain(userName) {
 				this.login(userName);
@@ -158,6 +180,9 @@
 		onReady() {
 			this.initPosition();
 			this.initProvider();
+			// #ifdef MP-WEIXIN
+			this.isDevtools = uni.getSystemInfoSync().platform === 'devtools';
+			// #endif
 		}
 	}
 </script>
@@ -185,6 +210,7 @@
 	}
 
 	.oauth-image {
+		position: relative;
 		width: 50px;
 		height: 50px;
 		border: 1px solid #dddddd;
@@ -197,5 +223,14 @@
 		width: 30px;
 		height: 30px;
 		margin: 10px;
+	}
+
+	.oauth-image button {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
 	}
 </style>
