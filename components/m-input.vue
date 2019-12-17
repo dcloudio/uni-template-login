@@ -1,12 +1,12 @@
 <template>
 	<view class="m-input-view">
-		<input :focus="focus_" :type="inputType" :value="value" @input="onInput" class="m-input-input" :placeholder="placeholder"
+		<input :focus="focus" :type="inputType" :value="value" @input="onInput" class="m-input-input" :placeholder="placeholder"
 		 :password="type==='password'&&!showPassword" @focus="onFocus" @blur="onBlur" />
 		<!-- 优先显示密码可见按钮 -->
-		<view v-if="clearable_&&!displayable_&&value.length" class="m-input-icon">
+		<view v-if="clearable&&!displayable&&value.length" class="m-input-icon">
 			<m-icon color="#666666" type="clear" @click="clear"></m-icon>
 		</view>
-		<view v-if="displayable_" class="m-input-icon">
+		<view v-if="displayable" class="m-input-icon">
 			<m-icon :style="{color:showPassword?'#666666':'#cccccc'}" type="eye" @click="display"></m-icon>
 		</view>
 	</view>
@@ -74,15 +74,6 @@
 			inputType() {
 				const type = this.type
 				return type === 'password' ? 'text' : type
-			},
-			clearable_() {
-				return String(this.clearable) !== 'false'
-			},
-			displayable_() {
-				return String(this.displayable) !== 'false'
-			},
-			focus_() {
-				return String(this.focus) !== 'false'
 			}
 		},
 		methods: {
@@ -101,7 +92,7 @@
 				})
 			},
 			onInput(e) {
-				this.$emit('input', e.target.value)
+				this.$emit('input', e.detail.value)
 			}
 		}
 	}
