@@ -8,6 +8,7 @@
 	/* 5+App特有相关 */
     "app-plus": {
 		"usingComponents": true,
+		"compilerVersion": 3,
 		/* 模块配置 */
         "modules": {
 
