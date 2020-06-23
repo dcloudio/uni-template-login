@@ -3,7 +3,7 @@
 		<view class="input-group">
 			<view class="input-row border">
 				<text class="title">账号：</text>
-				<m-input class="m-input" type="text" clearable focus v-model="account" placeholder="请输入账号"></m-input>
+				<m-input class="m-input" type="text" clearable focus v-model="username" placeholder="请输入账号"></m-input>
 			</view>
 			<view class="input-row">
 				<text class="title">密码：</text>
@@ -45,7 +45,7 @@
 			return {
 				providerList: [],
 				hasProvider: false,
-				account: '',
+				username: '',
 				password: '',
 				positionTop: 0,
 				isDevtools: false,
@@ -88,7 +88,7 @@
 				 * 客户端对账号信息进行一些必要的校验。
 				 * 实际开发中，根据业务需要进行处理，这里仅做示例。
 				 */
-				if (this.account.length < 3) {
+				if (this.username.length < 3) {
 					uni.showToast({
 						icon: 'none',
 						title: '账号最短为 3 个字符'
@@ -108,20 +108,38 @@
 				 * 实际开发中，使用 uni.request 将账号信息发送至服务端，客户端在回调函数中获取结果信息。
 				 */
 				const data = {
-					account: this.account,
+					username: this.username,
 					password: this.password
 				};
-				const validUser = service.getUsers().some(function(user) {
-					return data.account === user.account && data.password === user.password;
-				});
-				if (validUser) {
-					this.toMain(this.account);
-				} else {
-					uni.showToast({
-						icon: 'none',
-						title: '用户账号或密码不正确',
-					});
-				}
+				let _self = this;
+				
+				uniCloud.callFunction({
+				  name:'user-center',
+				  data:{
+				    action:'login',
+				    params:data
+				  },
+				  success:(e) => {
+				    
+				    console.log('login success',e);
+				    
+				    if(e.result.code == 0){
+				      uni.setStorageSync('uniIdToken',e.result.token)
+				      _self.toMain(_self.username);
+				    }else{
+				      uni.showModal({
+				        content:e.result.msg
+				      })
+				      console.log('登录失败',e);
+				    }
+				    
+				  },
+				  fail(e) {
+				    uni.showModal({
+				      content:JSON.stringify(e)
+				    })
+				  }
+				})
 			},
 			oauth(value) {
 				uni.login({

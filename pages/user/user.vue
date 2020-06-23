@@ -26,14 +26,43 @@
 			},
 			bindLogout() {
 				this.logout();
-				/**
-				 * 如果需要强制登录跳转回登录页面
-				 */
-				if (this.forcedLogin) {
-					uni.reLaunch({
-						url: '../login/login',
-					});
-				}
+        
+        uniCloud.callFunction({
+          name:'user-center',
+          data:{
+            action:'logout'
+          },
+          success:(e) => {
+            
+            console.log('logout success',e);
+            
+            if(e.result.code == 0){
+              uni.removeStorageSync('uniIdToken')
+              uni.removeStorageSync('username')
+              /**
+               * 如果需要强制登录跳转回登录页面
+               */
+              if (this.forcedLogin) {
+              	uni.reLaunch({
+              		url: '../login/login',
+              	});
+              }
+            }else{
+              uni.showModal({
+                content:e.result.msg
+              })
+              console.log('登出失败',e);
+            }
+            
+          },
+          fail(e) {
+            uni.showModal({
+              content:JSON.stringify(e)
+            })
+          }
+        })
+        
+				
 			}
 		}
 	}

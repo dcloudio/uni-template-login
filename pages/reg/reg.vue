@@ -3,7 +3,7 @@
 		<view class="input-group">
 			<view class="input-row border">
 				<text class="title">账号：</text>
-				<m-input type="text" focus clearable v-model="account" placeholder="请输入账号"></m-input>
+				<m-input type="text" focus clearable v-model="username" placeholder="请输入账号"></m-input>
 			</view>
 			<view class="input-row border">
 				<text class="title">密码：</text>
@@ -30,7 +30,7 @@
 		},
 		data() {
 			return {
-				account: '',
+				username: '',
 				password: '',
 				email: ''
 			}
@@ -41,7 +41,7 @@
 				 * 客户端对账号信息进行一些必要的校验。
 				 * 实际开发中，根据业务需要进行处理，这里仅做示例。
 				 */
-				if (this.account.length < 3) {
+				if (this.username.length < 3) {
 					uni.showToast({
 						icon: 'none',
 						title: '账号最短为 3 个字符'
@@ -64,17 +64,32 @@
 				}
 
 				const data = {
-					account: this.account,
+					username: this.username,
 					password: this.password,
 					email: this.email
 				}
-				service.addUser(data);
-				uni.showToast({
-					title: '注册成功'
-				});
-				uni.navigateBack({
-					delta: 1
-				});
+				uniCloud.callFunction({
+				  name: 'user-center',
+				  data: {
+				    action: 'register',
+				    params: data
+				  },
+				  success(e) {
+				    console.log("注册成功", e);
+				
+				    uni.showToast({
+				      title: '注册成功'
+				    });
+				    uni.navigateBack({
+				      delta: 1
+				    });
+				  },
+				  fail(e) {
+				    uni.showModal({
+				      content: JSON.stringify(e)
+				    })
+				  }
+				})
 			}
 		}
 	}
