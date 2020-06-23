@@ -31,6 +31,7 @@
     onLoad() {
 
       let uniIdToken = uni.getStorageSync('uniIdToken')
+      this.userName = uni.getStorageSync('username')
       if (uniIdToken) {
         uniCloud.callFunction({
           name: 'user-center',

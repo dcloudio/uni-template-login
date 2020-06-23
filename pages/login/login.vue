@@ -125,6 +125,7 @@
 				    
 				    if(e.result.code == 0){
 				      uni.setStorageSync('uniIdToken',e.result.token)
+              uni.setStorageSync('username',e.result.username)
 				      _self.toMain(_self.username);
 				    }else{
 				      uni.showModal({
