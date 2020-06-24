@@ -112,34 +112,34 @@
 					password: this.password
 				};
 				let _self = this;
-				
+
 				uniCloud.callFunction({
-				  name:'user-center',
-				  data:{
-				    action:'login',
-				    params:data
-				  },
-				  success:(e) => {
-				    
-				    console.log('login success',e);
-				    
-				    if(e.result.code == 0){
-				      uni.setStorageSync('uniIdToken',e.result.token)
-              uni.setStorageSync('username',e.result.username)
-				      _self.toMain(_self.username);
-				    }else{
-				      uni.showModal({
-				        content:e.result.msg
-				      })
-				      console.log('登录失败',e);
-				    }
-				    
-				  },
-				  fail(e) {
-				    uni.showModal({
-				      content:JSON.stringify(e)
-				    })
-				  }
+					name: 'user-center',
+					data: {
+						action: 'login',
+						params: data
+					},
+					success: (e) => {
+
+						console.log('login success', e);
+
+						if (e.result.code == 0) {
+							uni.setStorageSync('uniIdToken', e.result.token)
+							uni.setStorageSync('username', e.result.username)
+							_self.toMain(_self.username);
+						} else {
+							uni.showModal({
+								content: e.result.msg
+							})
+							console.log('登录失败', e);
+						}
+
+					},
+					fail(e) {
+						uni.showModal({
+							content: JSON.stringify(e)
+						})
+					}
 				})
 			},
 			oauth(value) {
