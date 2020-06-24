@@ -9,6 +9,7 @@
 
 手机扫码体验：
 
+![](https://img.cdn.aliyun.dcloud.net.cn/uni-app/uni-template-login-qr.png)
 
 ## 本地运行
 
