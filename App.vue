@@ -107,7 +107,7 @@
 	}
 
 	.input-row .title {
-		width: 72px;
+		width: 100px;
 		padding-left: 15px;
 	}
 

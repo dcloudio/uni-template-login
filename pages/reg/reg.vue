@@ -10,8 +10,8 @@
 				<m-input type="password" displayable v-model="password" placeholder="请输入密码"></m-input>
 			</view>
 			<view class="input-row">
-				<text class="title">邮箱：</text>
-				<m-input type="text" clearable v-model="email" placeholder="请输入邮箱"></m-input>
+				<text class="title">确认密码：</text>
+				<m-input type="password" displayable v-model="confirmPassword" placeholder="请确认密码"></m-input>
 			</view>
 		</view>
 		<view class="btn-row">
@@ -32,7 +32,7 @@
 			return {
 				username: '',
 				password: '',
-				email: ''
+				confirmPassword: ''
 			}
 		},
 		methods: {
@@ -55,40 +55,49 @@
 					});
 					return;
 				}
-				if (this.email.length < 3 || !~this.email.indexOf('@')) {
+				if (this.password !== this.confirmPassword) {
 					uni.showToast({
 						icon: 'none',
-						title: '邮箱地址不合法'
+						title: '两次密码输入不一致'
 					});
 					return;
 				}
 
 				const data = {
 					username: this.username,
-					password: this.password,
-					email: this.email
+					password: this.password
 				}
 				uniCloud.callFunction({
-				  name: 'user-center',
-				  data: {
-				    action: 'register',
-				    params: data
-				  },
-				  success(e) {
-				    console.log("注册成功", e);
-				
-				    uni.showToast({
-				      title: '注册成功'
-				    });
-				    uni.navigateBack({
-				      delta: 1
-				    });
-				  },
-				  fail(e) {
-				    uni.showModal({
-				      content: JSON.stringify(e)
-				    })
-				  }
+					name: 'user-center',
+					data: {
+						action: 'register',
+						params: data
+					},
+					success(e) {
+						console.log("注册成功", e);
+
+						if (e.result.code === 0) {
+							uni.showToast({
+								title: '注册成功'
+							});
+							uni.setStorageSync('uniIdToken', e.result.token)
+							uni.setStorageSync('username', e.result.username)
+							uni.reLaunch({
+								url: '../main/main',
+							});
+						} else {
+							uni.showModal({
+								content: JSON.stringify(e.result),
+								showCancel: false
+							})
+						}
+					},
+					fail(e) {
+						uni.showModal({
+							content: JSON.stringify(e),
+							showCancel: false
+						})
+					}
 				})
 			}
 		}

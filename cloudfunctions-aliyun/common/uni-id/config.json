@@ -1,11 +1,8 @@
 {
 	"passwordSecret": "passwordSecret-demo",
 	"tokenSecret": "tokenSecret-demo",
-	"tokenExpiresIn": 3600,
-	"mp-weixin":{
-		"tokenExpiresIn": 7200
-	},
+	"tokenExpiresIn": 7200,
 	"app-plus": {
-		"tokenExpiresIn": 432000
+		"tokenExpiresIn": 2592000
 	}
 }
