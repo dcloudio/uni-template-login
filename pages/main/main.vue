@@ -30,10 +30,14 @@
 	export default {
 		computed: mapState(['forcedLogin', 'hasLogin', 'userName']),
 		onLoad() {
-
+			const loginType = uni.getStorageSync('login_type')
+			if (loginType === 'local') {
+				this.login(uni.getStorageSync('username'))
+				return
+			}
 			let uniIdToken = uni.getStorageSync('uniIdToken')
-			this.login(uni.getStorageSync('username'))
 			if (uniIdToken) {
+				this.login(uni.getStorageSync('username'))
 				uniCloud.callFunction({
 					name: 'user-center',
 					data: {

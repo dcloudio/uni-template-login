@@ -25,7 +25,16 @@
 				});
 			},
 			bindLogout() {
-				this.logout();
+				const loginType = uni.getStorageSync('login_type')
+				if (loginType === 'local') {
+					this.logout();
+					if (this.forcedLogin) {
+						uni.reLaunch({
+							url: '../login/login',
+						});
+					}
+					return
+				}
 
 				uniCloud.callFunction({
 					name: 'user-center',
@@ -37,6 +46,7 @@
 						console.log('logout success', e);
 
 						if (e.result.code == 0) {
+							this.logout();
 							uni.removeStorageSync('uniIdToken')
 							uni.removeStorageSync('username')
 							/**

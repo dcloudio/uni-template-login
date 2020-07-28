@@ -126,6 +126,7 @@
 						if (e.result.code == 0) {
 							uni.setStorageSync('uniIdToken', e.result.token)
 							uni.setStorageSync('username', e.result.username)
+							uni.setStorageSync('login_type', 'online')
 							_self.toMain(_self.username);
 						} else {
 							uni.showModal({
@@ -143,6 +144,7 @@
 				})
 			},
 			oauth(value) {
+				console.log('三方登录只演示登录api能力，暂未关联云端数据');
 				uni.login({
 					provider: value,
 					success: (res) => {
@@ -153,7 +155,7 @@
 								 * 实际开发中，获取用户信息后，需要将信息上报至服务端。
 								 * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。
 								 */
-								this.toMain(infoRes.userInfo.nickName);
+								this.loginLocal(infoRes.userInfo.nickName);
 							},
 							fail() {
 								uni.showToast({
@@ -171,14 +173,20 @@
 			getUserInfo({
 				detail
 			}) {
+				console.log('三方登录只演示登录api能力，暂未关联云端数据');
 				if (detail.userInfo) {
-					this.toMain(detail.userInfo.nickName);
+					this.loginLocal(detail.userInfo.nickName);
 				} else {
 					uni.showToast({
 						icon: 'none',
 						title: '登陆失败'
 					});
 				}
+			},
+			loginLocal(nickName){
+				uni.setStorageSync('login_type', 'local')
+				uni.setStorageSync('username', nickName)
+				this.toMain(nickName);
 			},
 			toMain(userName) {
 				this.login(userName);
