@@ -12,9 +12,31 @@
 					"Name": "username",
 					"Direction": "1"
 				}],
-				"MgoIsUnique": true
+				"MgoIsUnique": false
 			}
 		}, {
+			"IndexName": "mobile",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "mobile",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		}, {
+			"IndexName": "email",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "email",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		}]
+	},
+	"uni-verify": {
+		"data": [],
+		"index": [{
 			"IndexName": "mobile",
 			"MgoKeySchema": {
 				"MgoIndexKeys": [{
