@@ -112,7 +112,7 @@
 		flex: 1;
 		width: 100%;
 		height: 20px;
-		line-height: inherit;
+		line-height: 20px;
 		background-color: rgba(0, 0, 0, 0);
 	}
 

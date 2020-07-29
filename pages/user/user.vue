@@ -40,7 +40,7 @@
 				</view>
 			</view>
 			<view class="btn-row">
-				<button v-if="hasLogin" type="default" @tap="bindLogout">退出登录</button>
+				<button v-if="hasLogin" class="primary" type="primary" @tap="bindLogout">退出登录</button>
 			</view>
 		</view>
 	</view>
@@ -148,9 +148,9 @@
 	}
 
 	.logo {
-		width: 750upx;
-		height: 240upx;
-		padding: 20upx;
+		width: 750rpx;
+		height: 240rpx;
+		padding: 20rpx;
 		box-sizing: border-box;
 		background-color: #0faeff;
 		flex-direction: row;
@@ -162,86 +162,86 @@
 	}
 
 	.logo-img {
-		width: 150upx;
-		height: 150upx;
-		border-radius: 150upx;
+		width: 150rpx;
+		height: 150rpx;
+		border-radius: 150rpx;
 	}
 
 	.logo-title {
-		height: 150upx;
+		height: 150rpx;
 		flex: 1;
 		align-items: center;
 		justify-content: space-between;
 		flex-direction: row;
-		margin-left: 20upx;
+		margin-left: 20rpx;
 	}
 
 	.uer-name {
-		height: 60upx;
-		line-height: 60upx;
-		font-size: 38upx;
+		height: 60rpx;
+		line-height: 60rpx;
+		font-size: 38rpx;
 		color: #FFFFFF;
 	}
 
 	.go-login.navigat-arrow {
-		font-size: 38upx;
+		font-size: 38rpx;
 		color: #FFFFFF;
 	}
 
 	.login-title {
-		height: 150upx;
+		height: 150rpx;
 		align-items: self-start;
 		justify-content: center;
 		flex-direction: column;
-		margin-left: 20upx;
+		margin-left: 20rpx;
 	}
 
 	.center-list {
 		background-color: #FFFFFF;
-		margin-top: 20upx;
-		width: 750upx;
+		margin-top: 20rpx;
+		width: 750rpx;
 		flex-direction: column;
 	}
 
 	.center-list-item {
-		height: 90upx;
-		width: 750upx;
+		height: 90rpx;
+		width: 750rpx;
 		box-sizing: border-box;
 		flex-direction: row;
-		padding: 0upx 20upx;
+		padding: 0rpx 20rpx;
 	}
 
 	.border-bottom {
-		border-bottom-width: 1upx;
+		border-bottom-width: 1rpx;
 		border-color: #c8c7cc;
 		border-bottom-style: solid;
 	}
 
 	.list-icon {
-		width: 40upx;
-		height: 90upx;
-		line-height: 90upx;
-		font-size: 34upx;
+		width: 40rpx;
+		height: 90rpx;
+		line-height: 90rpx;
+		font-size: 34rpx;
 		color: #0faeff;
 		text-align: center;
 		font-family: texticons;
-		margin-right: 20upx;
+		margin-right: 20rpx;
 	}
 
 	.list-text {
-		height: 90upx;
-		line-height: 90upx;
-		font-size: 34upx;
+		height: 90rpx;
+		line-height: 90rpx;
+		font-size: 34rpx;
 		color: #555;
 		flex: 1;
 		text-align: left;
 	}
 
 	.navigat-arrow {
-		height: 90upx;
-		width: 40upx;
-		line-height: 90upx;
-		font-size: 34upx;
+		height: 90rpx;
+		width: 40rpx;
+		line-height: 90rpx;
+		font-size: 34rpx;
 		color: #555;
 		text-align: right;
 		font-family: texticons;
