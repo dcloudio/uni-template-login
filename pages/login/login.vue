@@ -1,6 +1,10 @@
 <template>
 	<view class="content">
-		<view class="input-group">
+		<view class="login-type">
+			<view v-for="(item,index) in loginTypeList" :key="index" @click="loginType = index" :class="{act: loginType === index}"
+			 class="login-type-btn">{{item}}</view>
+		</view>
+		<view class="input-group" v-if="loginType === 0">
 			<view class="input-row border">
 				<text class="title">账号：</text>
 				<m-input class="m-input" type="text" clearable focus v-model="username" placeholder="请输入账号"></m-input>
@@ -8,6 +12,17 @@
 			<view class="input-row">
 				<text class="title">密码：</text>
 				<m-input type="password" displayable v-model="password" placeholder="请输入密码"></m-input>
+			</view>
+		</view>
+		<view class="input-group" v-else>
+			<view class="input-row border">
+				<text class="title">手机：</text>
+				<m-input class="m-input" type="text" clearable focus v-model="mobile" placeholder="请输入手机号码"></m-input>
+			</view>
+			<view class="input-row">
+				<text class="title">验证码：</text>
+				<m-input type="text" v-model="code" placeholder="请输入验证码"></m-input>
+				<view class="send-code-btn" @click="sendSmsCode">{{codeDuration ? codeDuration + 's' : '发送验证码' }}</view>
 			</view>
 		</view>
 		<view class="btn-row">
@@ -43,12 +58,17 @@
 		},
 		data() {
 			return {
+				loginType: 0,
+				loginTypeList: ['密码登录', '免密登录'],
+				mobile: '',
+				code: '',
 				providerList: [],
 				hasProvider: false,
 				username: '',
 				password: '',
 				positionTop: 0,
 				isDevtools: false,
+				codeDuration: 0
 			}
 		},
 		computed: mapState(['forcedLogin']),
@@ -83,7 +103,52 @@
 				 */
 				this.positionTop = uni.getSystemInfoSync().windowHeight - 100;
 			},
-			bindLogin() {
+			sendSmsCode() {
+				if (!/^1\d{10}$/.test(this.mobile)) {
+					uni.showModal({
+						content: '手机号码填写错误',
+						showCancel: false
+					})
+					return
+				}
+				this.codeDuration = 60
+				this.codeInterVal = setInterval(() => {
+					this.codeDuration--
+					if (this.codeDuration === 0) {
+						if (this.codeInterVal) {
+							clearInterval(this.codeInterVal)
+							this.codeInterVal = null
+						}
+					}
+				}, 1000)
+				uniCloud.callFunction({
+					name: 'user-center',
+					data: {
+						action: 'sendSmsCode',
+						params: {
+							mobile: this.mobile
+						}
+					},
+					success: (e) => {
+						if (e.result.code == 0) {
+							uni.showModal({
+								content: '验证码发送成功，请注意查收'
+							})
+						} else {
+							uni.showModal({
+								content: '验证码发送失败：' + e.result.msg
+							})
+						}
+
+					},
+					fail(e) {
+						uni.showModal({
+							content: '验证码发送失败'
+						})
+					}
+				})
+			},
+			loginByPwd() {
 				/**
 				 * 客户端对账号信息进行一些必要的校验。
 				 * 实际开发中，根据业务需要进行处理，这里仅做示例。
@@ -102,11 +167,6 @@
 					});
 					return;
 				}
-				/**
-				 * 下面简单模拟下服务端的处理
-				 * 检测用户账号密码是否在已注册的用户列表中
-				 * 实际开发中，使用 uni.request 将账号信息发送至服务端，客户端在回调函数中获取结果信息。
-				 */
 				const data = {
 					username: this.username,
 					password: this.password
@@ -142,6 +202,69 @@
 						})
 					}
 				})
+			},
+			loginBySms() {
+				if (!/^1\d{10}$/.test(this.mobile)) {
+					uni.showModal({
+						content: '手机号码填写错误',
+						showCancel: false
+					})
+					return
+				}
+				if (!/^\d{6}$/.test(this.code)) {
+					uni.showModal({
+						title: '验证码为6位纯数字',
+						showCancel: false
+					});
+					return;
+				}
+				let _self = this;
+
+				uniCloud.callFunction({
+					name: 'user-center',
+					data: {
+						action: 'loginBySms',
+						params: {
+							mobile: this.mobile,
+							code: this.code
+						}
+					},
+					success: (e) => {
+
+						console.log('login success', e);
+
+						if (e.result.code == 0) {
+							const username = e.result.username || '新用户'
+							uni.setStorageSync('uniIdToken', e.result.token)
+							uni.setStorageSync('username', username)
+							uni.setStorageSync('login_type', 'online')
+							_self.toMain(username);
+						} else {
+							uni.showModal({
+								content: e.result.msg
+							})
+							console.log('登录失败', e);
+						}
+
+					},
+					fail(e) {
+						uni.showModal({
+							content: JSON.stringify(e)
+						})
+					}
+				})
+			},
+			bindLogin() {
+				switch (this.loginType) {
+					case 0:
+						this.loginByPwd()
+						break;
+					case 1:
+						this.loginBySms()
+						break;
+					default:
+						break;
+				}
 			},
 			oauth(value) {
 				console.log('三方登录只演示登录api能力，暂未关联云端数据');
@@ -183,7 +306,7 @@
 					});
 				}
 			},
-			loginLocal(nickName){
+			loginLocal(nickName) {
 				uni.setStorageSync('login_type', 'local')
 				uni.setStorageSync('username', nickName)
 				this.toMain(nickName);
@@ -215,6 +338,28 @@
 </script>
 
 <style>
+	.login-type {
+		display: flex;
+		justify-content: center;
+	}
+
+	.login-type-btn {
+		line-height: 30px;
+		margin: 0px 15px;
+	}
+
+	.login-type-btn.act {
+		color: #0FAEFF;
+		border-bottom: solid 1px #0FAEFF;
+	}
+
+	.send-code-btn {
+		width: 120px;
+		text-align: center;
+		background-color: #0FAEFF;
+		color: #FFFFFF;
+	}
+
 	.action-row {
 		display: flex;
 		flex-direction: row;
