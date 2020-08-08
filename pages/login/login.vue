@@ -30,8 +30,8 @@
 		</view>
 		<view class="action-row">
 			<navigator url="../reg/reg">注册账号</navigator>
-			<text>|</text>
-			<navigator url="../pwd/pwd">忘记密码</navigator>
+			<!-- <text>|</text>
+			<navigator url="../pwd/pwd">忘记密码</navigator> -->
 		</view>
 		<view class="oauth-row" v-if="hasProvider" v-bind:style="{top: positionTop + 'px'}">
 			<view class="oauth-image" v-for="provider in providerList" :key="provider.value">
@@ -132,18 +132,21 @@
 					success: (e) => {
 						if (e.result.code == 0) {
 							uni.showModal({
-								content: '验证码发送成功，请注意查收'
+								content: '验证码发送成功，请注意查收',
+								showCancel: false
 							})
 						} else {
 							uni.showModal({
-								content: '验证码发送失败：' + e.result.msg
+								content: '验证码发送失败：' + e.result.msg,
+								showCancel: false
 							})
 						}
 
 					},
 					fail(e) {
 						uni.showModal({
-							content: '验证码发送失败'
+							content: '验证码发送失败',
+							showCancel: false
 						})
 					}
 				})
@@ -190,7 +193,8 @@
 							_self.toMain(_self.username);
 						} else {
 							uni.showModal({
-								content: e.result.msg
+								content: e.result.msg,
+								showCancel: false
 							})
 							console.log('登录失败', e);
 						}
@@ -198,7 +202,8 @@
 					},
 					fail(e) {
 						uni.showModal({
-							content: JSON.stringify(e)
+							content: JSON.stringify(e),
+							showCancel: false
 						})
 					}
 				})
@@ -241,7 +246,8 @@
 							_self.toMain(username);
 						} else {
 							uni.showModal({
-								content: e.result.msg
+								content: e.result.msg,
+								showCancel: false
 							})
 							console.log('登录失败', e);
 						}
@@ -249,7 +255,8 @@
 					},
 					fail(e) {
 						uni.showModal({
-							content: JSON.stringify(e)
+							content: JSON.stringify(e),
+							showCancel: false
 						})
 					}
 				})

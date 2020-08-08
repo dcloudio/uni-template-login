@@ -62,7 +62,8 @@
 					},
 					fail(e) {
 						uni.showModal({
-							content: JSON.stringify(e)
+							content: JSON.stringify(e),
+							showCancel: false
 						})
 					}
 				})

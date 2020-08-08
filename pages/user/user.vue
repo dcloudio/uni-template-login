@@ -103,7 +103,8 @@
 							}
 						} else {
 							uni.showModal({
-								content: e.result.msg
+								content: e.result.msg,
+								showCancel: false
 							})
 							console.log('登出失败', e);
 						}
@@ -111,7 +112,8 @@
 					},
 					fail(e) {
 						uni.showModal({
-							content: JSON.stringify(e)
+							content: JSON.stringify(e),
+							showCancel: false
 						})
 					}
 				})
@@ -138,7 +140,7 @@
 	page {
 		background-color: #f8f8f8;
 	}
-	
+
 	button {
 		width: 100%;
 	}
