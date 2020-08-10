@@ -22,7 +22,7 @@
 
 ## 特点
 
-- 兼容微信小程序和 APP
-- 服务端基于 uniCloud 实现
+- 前端基于uni-app实现，支持所有平台
+- 服务端基于 uniCloud 实现，用户管理基于 [uni-id](https://uniapp.dcloud.net.cn/uniCloud/uni-id) 实现
 - 使用 vuex 管理登录状态
-- 包含账户密码登录
+- 支持账号密码、手机号验证等多种登录模式
