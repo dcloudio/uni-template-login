@@ -32,7 +32,7 @@
 	},
 	"service": {
 		"sms": {
-			"name": "DCloud",
+			"name": "your app name",
 			"codeExpiresIn": 180,
 			"smsKey": "your sms key",
 			"smsSecret": "your sms secret"

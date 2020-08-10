@@ -104,6 +104,12 @@
 				this.positionTop = uni.getSystemInfoSync().windowHeight - 100;
 			},
 			sendSmsCode() {
+				if(this.codeDuration) {
+					uni.showModal({
+						content: `请在${this.codeDuration}秒后重试`,
+						showCancel: false
+					})
+				}
 				if (!/^1\d{10}$/.test(this.mobile)) {
 					uni.showModal({
 						content: '手机号码填写错误',
@@ -111,16 +117,6 @@
 					})
 					return
 				}
-				this.codeDuration = 60
-				this.codeInterVal = setInterval(() => {
-					this.codeDuration--
-					if (this.codeDuration === 0) {
-						if (this.codeInterVal) {
-							clearInterval(this.codeInterVal)
-							this.codeInterVal = null
-						}
-					}
-				}, 1000)
 				uniCloud.callFunction({
 					name: 'user-center',
 					data: {
@@ -135,6 +131,16 @@
 								content: '验证码发送成功，请注意查收',
 								showCancel: false
 							})
+							this.codeDuration = 60
+							this.codeInterVal = setInterval(() => {
+								this.codeDuration--
+								if (this.codeDuration === 0) {
+									if (this.codeInterVal) {
+										clearInterval(this.codeInterVal)
+										this.codeInterVal = null
+									}
+								}
+							}, 1000)
 						} else {
 							uni.showModal({
 								content: '验证码发送失败：' + e.result.msg,
