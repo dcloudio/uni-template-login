@@ -13,7 +13,7 @@
 
 ## 本地运行
 
-1. 将项目拖入[HbuilderX](http://www.dcloud.io/hbuilderx.html)
+1. 将项目拖入[HBuilderX](http://www.dcloud.io/hbuilderx.html)
 2. 创建服务空间，详情参考[uniCloud 快速上手](https://uniapp.dcloud.net.cn/uniCloud/quickstart)
 3. 上传 common 下的公用模块、在云函数 user-center 内安装 uni-id 模块并上传，[公用模块参考文档](https://uniapp.dcloud.io/uniCloud/cf-common)
 4. 在 cloudfunctions 目录下的`db_init.json`右键初始化云数据库
