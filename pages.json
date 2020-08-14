@@ -25,6 +25,14 @@
 			"style": {
 				"navigationBarTitleText": "我的"
 			}
+		}, {
+			"path": "pages/invite/invite",
+			"style": {
+				"navigationBarTitleText": "邀请注册页面"
+			}
+		}, {
+			"path": "pages/invite-reg/invite-reg",
+			"style": {}
 		}
 	],
 	"tabBar": {

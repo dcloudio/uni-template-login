@@ -7,11 +7,25 @@ exports.main = async (event, context) => {
 	//event为客户端上传的参数
 	console.log('event : ' + event)
 
-
-	let params = event.params
-	let res = {}
-
+	let params = event.params || {}
 	let payload = {}
+	let noCheckAction = ['register', 'checkToken', 'login', 'logout', 'sendSmsCode', 'loginBySms', 'inviteLogin']
+
+	if (noCheckAction.indexOf(event.action) === -1) {
+		if (!event.uniIdToken) {
+			return {
+				code: 403,
+				msg: '缺少token'
+			}
+		}
+		payload = await uniID.checkToken(event.uniIdToken)
+		if (payload.code && payload.code > 0) {
+			return payload
+		}
+		params.uid = payload.uid
+	}
+
+	let res = {}
 
 	switch (event.action) {
 		case 'register':
@@ -32,7 +46,7 @@ exports.main = async (event, context) => {
 				ip: context.CLIENTIP,
 				created_at: dbCmd.gt(Date.now() - 60000)
 			}).get()
-			if(ipLimit.data.length > 0) {
+			if (ipLimit.data.length > 0) {
 				return {
 					code: 429,
 					msg: '请求过于频繁'
@@ -43,11 +57,50 @@ exports.main = async (event, context) => {
 			res = await uniID.sendSmsCode({
 				mobile: params.mobile,
 				code,
-				type: 'login'
+				type: params.type
 			})
 			break;
 		case 'loginBySms':
+			if (!params.code) {
+				return {
+					code: 500,
+					msg: '请填写验证码'
+				}
+			}
+			if (!/^1\d{10}$/.test(params.mobile)) {
+				return {
+					code: 500,
+					msg: '手机号码填写错误'
+				}
+			}
 			res = await uniID.loginBySms(params)
+			break;
+		case 'inviteLogin':
+			if (!params.code) {
+				return {
+					code: 500,
+					msg: '请填写验证码'
+				}
+			}
+			res = await uniID.loginBySms({
+				...params,
+				type: 'register'
+			})
+			break;
+		case 'getInviteCode':
+			res = await uniID.getUserInfo({
+				uid: params.uid,
+				field: ['invite_code']
+			})
+			if (res.code === 0) {
+				res.inviteCode = res.userInfo.invite_code
+				delete res.userInfo
+			}
+			break;
+		case 'getInvitedUser':
+			res = await uniID.getInvitedUser({
+				uid: params.uid
+			})
 			break;
 		default:
 			res = {

@@ -2,9 +2,10 @@
 	"passwordSecret": "passwordSecret-demo",
 	"tokenSecret": "tokenSecret-demo",
 	"tokenExpiresIn": 7200,
-	"passwordErrorLimit": 6,
 	"bindTokenToDevice": true,
+	"passwordErrorLimit": 6,
 	"passwordErrorRetryTime": 3600,
+	"autoSetInviteCode": true,
 	"app-plus": {
 		"tokenExpiresIn": 2592000,
 		"oauth" : {
