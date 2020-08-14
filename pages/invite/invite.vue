@@ -115,6 +115,9 @@
 		color: #999999;
 		font-size: 12px;
 		line-height: 1.2em;
+		/* #ifdef H5 */
+		user-select: auto;
+		/* #endif */
 	}
 
 	.invited-users {
