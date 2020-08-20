@@ -6,16 +6,6 @@
 		</view>
 		<view class="input-group" v-if="loginType === 0">
 			<view class="input-row border">
-				<text class="title">账号：</text>
-				<m-input class="m-input" type="text" clearable focus v-model="username" placeholder="请输入账号"></m-input>
-			</view>
-			<view class="input-row">
-				<text class="title">密码：</text>
-				<m-input type="password" displayable v-model="password" placeholder="请输入密码"></m-input>
-			</view>
-		</view>
-		<view class="input-group" v-else>
-			<view class="input-row border">
 				<text class="title">手机：</text>
 				<m-input class="m-input" type="text" clearable focus v-model="mobile" placeholder="请输入手机号码"></m-input>
 			</view>
@@ -23,6 +13,16 @@
 				<text class="title">验证码：</text>
 				<m-input type="text" v-model="code" placeholder="请输入验证码"></m-input>
 				<view class="send-code-btn" @click="sendSmsCode">{{codeDuration ? codeDuration + 's' : '发送验证码' }}</view>
+			</view>
+		</view>
+		<view class="input-group" v-else>
+			<view class="input-row border">
+				<text class="title">账号：</text>
+				<m-input class="m-input" type="text" clearable focus v-model="username" placeholder="请输入账号"></m-input>
+			</view>
+			<view class="input-row">
+				<text class="title">密码：</text>
+				<m-input type="password" displayable v-model="password" placeholder="请输入密码"></m-input>
 			</view>
 		</view>
 		<view class="btn-row">
@@ -58,7 +58,7 @@
 		data() {
 			return {
 				loginType: 0,
-				loginTypeList: ['密码登录', '免密登录'],
+				loginTypeList: ['免密登录', '密码登录'],
 				mobile: '',
 				code: '',
 				providerList: [],
@@ -103,7 +103,7 @@
 				this.positionTop = uni.getSystemInfoSync().windowHeight - 100;
 			},
 			sendSmsCode() {
-				if(this.codeDuration) {
+				if (this.codeDuration) {
 					uni.showModal({
 						content: `请在${this.codeDuration}秒后重试`,
 						showCancel: false
@@ -269,10 +269,10 @@
 			bindLogin() {
 				switch (this.loginType) {
 					case 0:
-						this.loginByPwd()
+						this.loginBySms()
 						break;
 					case 1:
-						this.loginBySms()
+						this.loginByPwd()
 						break;
 					default:
 						break;
