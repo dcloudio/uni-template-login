@@ -26,3 +26,4 @@
 - 服务端基于 uniCloud 实现，用户管理基于 [uni-id](https://uniapp.dcloud.net.cn/uniCloud/uni-id) 实现
 - 使用 vuex 管理登录状态
 - 支持账号密码、手机号验证等多种登录模式
+- 支持裂变，可以邀请用户注册

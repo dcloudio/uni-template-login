@@ -14,11 +14,13 @@
 					<text class="list-text">帐号管理</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
+				<!-- #ifdef APP-PLUS -->
 				<view v-if="hasLogin" class="center-list-item border-bottom" @click="toInvite">
 					<text class="list-icon">&#xe65f;</text>
 					<text class="list-text">邀请好友</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
+				<!-- #endif -->
 				<view class="center-list-item">
 					<text class="list-icon">&#xe639;</text>
 					<text class="list-text">新消息通知</text>

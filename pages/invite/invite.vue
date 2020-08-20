@@ -1,28 +1,18 @@
 <template>
 	<view class="content">
-		<view class="invite-qrcode" v-if="inviteUrl">
-			<!-- #ifdef H5 -->
-			<view class="invite-qrcode-tips">请长按复制下面的链接发送给好友</view>
-			<view class="invite-url">{{inviteUrl}}</view>
-			<!-- #endif -->
-			<!-- #ifndef H5 -->
-			<view @click="copyInviteUrl">
-				<view class="invite-qrcode-tips">点击下面的链接复制后发送给好友</view>
-				<view class="invite-url">{{inviteUrl}}</view>
+		<view class="invite-wrapper" v-if="inviteUrl">
+			<uni-qrcode class="invite-qrcode" ref="qrcode" cid="invite-qr-canvas" :text="inviteUrl" :margin="10" makeOnLoad
+			 @makeComplete="qrcodeComplete" />
+			<view class="share-btn">
+				<button type="primary" @click="shareLink">分享链接</button>
+				<button type="primary" @click="shareImage">分享图片</button>
 			</view>
-			<!-- #endif -->
-			<view class="invited-users">
-				<view class="invited-users-title">我邀请的用户</view>
-				<view>
-					<view class="invited-users-empty" v-if="invitedUser.length === 0">
-						还没有用户接受邀请哦
-					</view>
-					<view class="invited-users-item" v-for="(item,index) in invitedUser">
-						<text class="username">{{item.username || '新用户'}}</text>
-						<text class="mobile">{{item.mobile}}</text>
-					</view>
-				</view>
+			<view class="share-btn">
+				<button type="primary" @click="toInvitedUser">我邀请的用户</button>
 			</view>
+			<uni-popup id="popupShare" ref="popupShare" type="share">
+				<uni-popup-share title="分享到" :shareType="shareType" @select="select"></uni-popup-share>
+			</uni-popup>
 		</view>
 	</view>
 </template>
@@ -35,10 +25,15 @@
 		data() {
 			return {
 				inviteUrl: '',
-				invitedUser: []
+				qrcodeImagePath: '',
+				qrcodePath: '',
+				shareType: ''
 			}
 		},
 		onLoad() {
+			uni.showLoading({
+				title: '加载中...'
+			})
 			uniCloud.callFunction({
 				name: 'user-center',
 				data: {
@@ -48,7 +43,7 @@
 					console.log(res);
 					if (res.result.code === 0) {
 						// 这里请修改为真实的邀请页面url
-						this.inviteUrl = 'http://localhost:8080/#/pages/invite-reg/invite-reg?invite_code=' + res.result.inviteCode
+						this.inviteUrl = 'https://login.tpl.dcloud.net.cn/#/pages/invite-reg/invite-reg?invite_code=' + res.result.myInviteCode
 					} else {
 						uni.showModal({
 							content: '获取用户邀请码失败:' + res.result.msg,
@@ -61,30 +56,9 @@
 						content: '获取用户邀请码失败，请稍后再试',
 						showCancel: false
 					})
-				}
-			})
-			uniCloud.callFunction({
-				name: 'user-center',
-				data: {
-					action: 'getInvitedUser'
 				},
-				success: (res) => {
-					console.log(res);
-					if (res.result.code === 0) {
-						// 这里请修改为真实的邀请页面url
-						this.invitedUser = res.result.invitedUser
-					} else {
-						uni.showModal({
-							content: '获取被邀请用户列表失败:' + res.result.msg,
-							showCancel: false
-						})
-					}
-				},
-				fail: (err) => {
-					uni.showModal({
-						content: '获取被邀请用户列表失败，请稍后再试',
-						showCancel: false
-					})
+				complete() {
+					uni.hideLoading()
 				}
 			})
 		},
@@ -93,67 +67,118 @@
 				uni.setClipboardData({
 					data: this.inviteUrl
 				})
+			},
+			qrcodeComplete(path) {
+				this.qrcodeImagePath = path
+			},
+			shareLink() {
+				this.shareType = 'link'
+				this.$refs.popupShare.open()
+			},
+			shareImage() {
+				this.shareType = 'image'
+				this.$refs.popupShare.open()
+			},
+			select({
+				item
+			}) {
+				const shareTitle = '登录模板',
+					shareSummary = 'DCloud邀请您试用登录模板'
+				let params = {}
+				switch (`${this.shareType}_${item.name}`) {
+					case 'link_weixin':
+						params = {
+							type: 1,
+							summary: this.inviteUrl,
+							scene: 'WXSceneSession'
+						}
+						break;
+					case 'link_qq':
+						params = {
+							type: 1,
+							title: shareTitle,
+							summary: shareSummary,
+							href: this.inviteUrl
+						}
+						break;
+					case 'link_more':
+						uni.setClipboardData({
+							data: this.inviteUrl
+						})
+						return
+					case 'image_weixin':
+						params = {
+							type: 2,
+							imageUrl: this.qrcodeImagePath,
+							scene: 'WXSceneSession'
+						}
+						break;
+					case 'image_qq':
+						params = {
+							type: 2,
+							imageUrl: this.qrcodeImagePath
+						}
+						break;
+					case 'image_more':
+						uni.shareWithSystem({
+							type: 'image',
+							imageUrl: this.qrcodeImagePath
+						})
+						return
+					default:
+						break;
+				}
+				console.log(params);
+				uni.share({
+					provider: item.name,
+					...params,
+					success() {
+						uni.showModal({
+							content: '分享成功',
+							showCancel: false
+						})
+					},
+					fail(err) {
+						uni.showModal({
+							content: '分享失败：' + err.errMsg,
+							showCancel: false
+						})
+					}
+				})
+
+			},
+			toInvitedUser() {
+				uni.navigateTo({
+					url: '/pages/invited-user/invited-user'
+				})
 			}
 		}
 	}
 </script>
 
 <style>
-	.invite-qrcode {
+	.invite-wrapper {
 		display: flex;
 		padding: 20px;
 		flex-direction: column;
+		align-items: center;
 	}
 
-	.invite-qrcode-tips {
-		padding: 10px 0px;
-		color: #666666;
-		line-height: 1.2em;
+	.invite-qrcode {
+		border-radius: 10px;
+		box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 10px 1px;
+		overflow: hidden;
 	}
 
-	.invite-url {
-		color: #999999;
-		font-size: 12px;
-		line-height: 1.2em;
-		/* #ifdef H5 */
-		user-select: auto;
-		/* #endif */
-	}
-
-	.invited-users {
-		background-color: #FFFFFF;
-		margin-top: 10px;
-		border-radius: 5px;
-		padding: 10px 0px;
-	}
-
-	.invited-users-title {
-		text-align: center;
-		margin-bottom: 10px;
-	}
-
-	.invited-users-empty {
-		font-size: 12px;
-		color: #999999;
-		text-align: center;
-	}
-
-	.invited-users-item {
+	.share-btn {
 		display: flex;
 		flex-direction: row;
-		border-bottom: solid 1px #DDDDDD;
-	}
-	
-	.invited-users-item:last-child {
-		border-bottom: none;
+		padding: 20px 0px 10px 0px;
 	}
 
-	.invited-users-item .username,
-	.invited-users-item .mobile {
+	.share-btn button {
 		flex: 1;
-		text-align: center;
-		font-size: 14px;
-		color: #666666;
-		line-height: 24px;
+		margin: 0px 10px;
+		border-radius: 40px;
 	}
 </style>

@@ -32,6 +32,69 @@
 				}],
 				"MgoIsUnique": false
 			}
+		}, {
+			"IndexName": "wx_openid.app-plus",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "wx_openid.app-plus",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		}, {
+			"IndexName": "wx_openid.mp-weixin",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "wx_openid.mp-weixin",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		}, {
+			"IndexName": "wx_unionid",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "wx_unionid",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		}, {
+			"IndexName": "ali_openid",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "ali_openid",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		},{
+			"IndexName": "my_invite_code",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "my_invite_code",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		},{
+			"IndexName": "inviter_uid",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "inviter_uid",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
+		},{
+			"IndexName": "invite_time",
+			"MgoKeySchema": {
+				"MgoIndexKeys": [{
+					"Name": "invite_time",
+					"Direction": "1"
+				}],
+				"MgoIsUnique": false
+			}
 		}]
 	},
 	"uni-verify": {
@@ -42,6 +105,9 @@
 				"MgoIndexKeys": [{
 					"Name": "mobile",
 					"Direction": "1"
+				}, {
+					"Name": "code",
+					"Direction": "1"
 				}],
 				"MgoIsUnique": false
 			}
@@ -50,6 +116,9 @@
 			"MgoKeySchema": {
 				"MgoIndexKeys": [{
 					"Name": "email",
+					"Direction": "1"
+				}, {
+					"Name": "code",
 					"Direction": "1"
 				}],
 				"MgoIsUnique": false

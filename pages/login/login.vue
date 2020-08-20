@@ -279,6 +279,10 @@
 				}
 			},
 			oauth(value) {
+				uni.showModal({
+					content: '三方登录只演示登录api能力，暂未关联云端数据',
+					showCancel: false
+				})
 				console.log('三方登录只演示登录api能力，暂未关联云端数据');
 				uni.login({
 					provider: value,

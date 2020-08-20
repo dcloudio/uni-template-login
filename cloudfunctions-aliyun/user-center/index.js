@@ -90,17 +90,15 @@ exports.main = async (event, context) => {
 		case 'getInviteCode':
 			res = await uniID.getUserInfo({
 				uid: params.uid,
-				field: ['invite_code']
+				field: ['my_invite_code']
 			})
 			if (res.code === 0) {
-				res.inviteCode = res.userInfo.invite_code
+				res.myInviteCode = res.userInfo.my_invite_code
 				delete res.userInfo
 			}
 			break;
 		case 'getInvitedUser':
-			res = await uniID.getInvitedUser({
-				uid: params.uid
-			})
+			res = await uniID.getInvitedUser(params)
 			break;
 		default:
 			res = {

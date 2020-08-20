@@ -32,7 +32,13 @@
 	page {
 		min-height: 100%;
 		display: flex;
-		font-size: 16px;
+		font-size: 14px;
+	}
+
+	input,
+	textarea,
+	button {
+		font-size: 14px;
 	}
 
 	/* #ifdef MP-BAIDU */

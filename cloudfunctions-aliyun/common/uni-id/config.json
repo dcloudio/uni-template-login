@@ -6,6 +6,7 @@
 	"passwordErrorLimit": 6,
 	"passwordErrorRetryTime": 3600,
 	"autoSetInviteCode": true,
+	"forceInviteCode": false,
 	"app-plus": {
 		"tokenExpiresIn": 2592000,
 		"oauth" : {

@@ -25,16 +25,29 @@
 			"style": {
 				"navigationBarTitleText": "我的"
 			}
-		}, {
+		}
+		// #ifdef APP-PLUS
+		, {
 			"path": "pages/invite/invite",
 			"style": {
-				"navigationBarTitleText": "邀请注册页面"
+				"navigationBarTitleText": "邀请好友"
 			}
-		}, {
-			"path": "pages/invite-reg/invite-reg",
-			"style": {}
 		}
-	],
+		// #endif
+	    ,{
+            "path" : "pages/invited-user/invited-user",
+            "style" : {}
+        }
+		// #ifdef H5
+		, {
+			"path": "pages/invite-reg/invite-reg",
+			"style": {
+				"navigationBarTitleText": "邀请注册页面",
+				"navigationStyle": "custom"
+			}
+		}
+		// #endif
+    ],
 	"tabBar": {
 		"color": "#7a7e83",
 		"selectedColor": "#0faeff",
