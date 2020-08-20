@@ -52,10 +52,6 @@
 		},
 		methods: {
 			sendSmsCode() {
-				uni.showLoading({
-					title: '请稍等...',
-					mask: true
-				})
 				if (this.codeDuration) {
 					uni.showModal({
 						content: `请在${this.codeDuration}秒后重试`,
@@ -69,6 +65,10 @@
 					})
 					return
 				}
+				uni.showLoading({
+					title: '请稍等...',
+					mask: true
+				})
 				uniCloud.callFunction({
 					name: 'user-center',
 					data: {

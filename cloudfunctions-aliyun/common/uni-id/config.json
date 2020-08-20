@@ -35,7 +35,7 @@
 	"service": {
 		"sms": {
 			"name": "your app name",
-			"codeExpiresIn": 180,
+			"codeExpiresIn": 300,
 			"smsKey": "your sms key",
 			"smsSecret": "your sms secret"
 		}
