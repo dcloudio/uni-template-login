@@ -34,20 +34,23 @@
 			}
 		}
 		// #endif
-	    ,{
-            "path" : "pages/invited-user/invited-user",
-            "style" : {}
-        }
+		, {
+			"path": "pages/invited-user/invited-user",
+			"style": {
+				"navigationBarTitleText": "受邀用户"
+			}
+		}
 		// #ifdef H5
 		, {
 			"path": "pages/invite-reg/invite-reg",
 			"style": {
 				"navigationBarTitleText": "邀请注册页面",
 				"navigationStyle": "custom"
+				"navigationStyle": "custom"
 			}
 		}
 		// #endif
-    ],
+	],
 	"tabBar": {
 		"color": "#7a7e83",
 		"selectedColor": "#0faeff",
