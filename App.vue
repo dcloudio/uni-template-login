@@ -120,12 +120,12 @@
 		display: flex;
 		flex-direction: row;
 		position: relative;
-		font-size: 18px;
+		/* font-size: 18px; */
 		line-height: 40px;
 	}
 
 	.input-row .title {
-		width: 100px;
+		width: 70px;
 		padding-left: 15px;
 	}
 

@@ -73,9 +73,11 @@
 		methods: {
 			...mapMutations(['logout']),
 			bindLogin() {
-				uni.navigateTo({
-					url: '../login/login',
-				});
+				if (!this.hasLogin) {
+					uni.navigateTo({
+						url: '../login/login',
+					});					
+				} 
 			},
 			bindLogout() {
 				const loginType = uni.getStorageSync('login_type')
@@ -177,8 +179,8 @@
 	}
 
 	.logo-img {
-		width: 150rpx;
-		height: 150rpx;
+		width: 120rpx;
+		height: 120rpx;
 		border-radius: 150rpx;
 	}
 
@@ -194,12 +196,10 @@
 	.uer-name {
 		height: 60rpx;
 		line-height: 60rpx;
-		font-size: 38rpx;
 		color: #FFFFFF;
 	}
 
 	.go-login.navigat-arrow {
-		font-size: 38rpx;
 		color: #FFFFFF;
 	}
 
@@ -236,7 +236,6 @@
 		width: 40rpx;
 		height: 90rpx;
 		line-height: 90rpx;
-		font-size: 34rpx;
 		color: #0faeff;
 		text-align: center;
 		font-family: texticons;
@@ -246,7 +245,6 @@
 	.list-text {
 		height: 90rpx;
 		line-height: 90rpx;
-		font-size: 34rpx;
 		color: #555;
 		flex: 1;
 		text-align: left;
@@ -256,7 +254,6 @@
 		height: 90rpx;
 		width: 40rpx;
 		line-height: 90rpx;
-		font-size: 34rpx;
 		color: #555;
 		text-align: right;
 		font-family: texticons;

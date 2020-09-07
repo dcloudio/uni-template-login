@@ -7,7 +7,8 @@
 
 .m-icon {
 	font-family: uniicons;
-	font-size: 24px;
+	/* font-size: 24px; */
+	margin-left: 20px;
 	font-weight: normal;
 	font-style: normal;
 	line-height: 1;

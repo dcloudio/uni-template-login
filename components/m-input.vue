@@ -117,7 +117,7 @@
 	}
 
 	.m-input-icon {
-		width: 20px;
+		/* width: 20px; */
 		font-size: 20px;
 		line-height: 20px;
 		color: #666666;
