@@ -35,7 +35,7 @@
 		</view>
 		<view class="oauth-row" v-if="hasProvider" v-bind:style="{top: positionTop + 'px'}">
 			<view class="oauth-image" v-for="provider in providerList" :key="provider.value">
-				<image :src="provider.image" @tap="oauth(provider.value)"></image>
+				<image :src="provider.image" @tap="loginByWeixin(provider.value)"></image>
 				<!-- #ifdef MP-WEIXIN -->
 				<button v-if="!isDevtools" open-type="getUserInfo" @getuserinfo="getUserInfo"></button>
 				<!-- #endif -->
@@ -279,35 +279,50 @@
 				}
 			},
 			oauth(value) {
-				uni.showModal({
-					content: '三方登录只演示登录api能力，暂未关联云端数据',
-					showCancel: false
+				if (value !== 'weixin') {
+					uni.showModal({
+						content: `${value}登录只演示登录api能力，暂未关联云端数据`,
+						showCancel: false
+					})
+					console.log(`${value}登录只演示登录api能力，暂未关联云端数据`);
+					uni.login({
+						provider: value,
+						success: (res) => {
+							uni.getUserInfo({
+								provider: value,
+								success: (infoRes) => {
+									/**
+									 * 实际开发中，获取用户信息后，需要将信息上报至服务端。
+									 * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。
+									 */
+									this.loginLocal(infoRes.userInfo.nickName);
+								},
+								fail() {
+									uni.showToast({
+										icon: 'none',
+										title: '登陆失败'
+									});
+								}
+							});
+						},
+						fail: (err) => {
+							console.error('授权登录失败：' + JSON.stringify(err));
+						}
+					});
+					return;
+				}
+				return new Promise((resolve, reject) => {
+					uni.login({
+						provider: value,
+						success: (res) => {
+							resolve(res.code)
+						},
+						fail: (err) => {
+							reject(new error(`${value}平台登录失败`))
+							console.error('授权登录失败：' + JSON.stringify(err));
+						}
+					});
 				})
-				console.log('三方登录只演示登录api能力，暂未关联云端数据');
-				uni.login({
-					provider: value,
-					success: (res) => {
-						uni.getUserInfo({
-							provider: value,
-							success: (infoRes) => {
-								/**
-								 * 实际开发中，获取用户信息后，需要将信息上报至服务端。
-								 * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。
-								 */
-								this.loginLocal(infoRes.userInfo.nickName);
-							},
-							fail() {
-								uni.showToast({
-									icon: 'none',
-									title: '登陆失败'
-								});
-							}
-						});
-					},
-					fail: (err) => {
-						console.error('授权登录失败：' + JSON.stringify(err));
-					}
-				});
 			},
 			getUserInfo({
 				detail
@@ -341,7 +356,52 @@
 					uni.navigateBack();
 				}
 
-			}
+			},
+			getWeixinCode() {
+				return new Promise((resolve, reject) => {
+					uni.login({
+						provider: 'weixin',
+						success(res) {
+							console.log('----------------')
+							console.log(res);
+							resolve(res.code)
+						},
+						fail(err) {
+							console.log('----------------')
+							console.log(err);
+							reject(new Error('微信登录失败'))
+						}
+					})
+				})
+			},
+			loginByWeixin(value) {
+				this.oauth(value).then((code) => {
+					return uniCloud.callFunction({
+						name: 'user-center',
+						data: {
+							action: 'loginByWeixin',
+							params: {
+								code,
+							}
+						}
+					})
+				}).then((res) => {
+					uni.showModal({
+						showCancel: false,
+						content: JSON.stringify(res.result)
+					})
+					if (res.result.code === 0) {
+						uni.setStorageSync('uni_id_token', res.result.token)
+						uni.setStorageSync('uni_id_token_expired', res.result.tokenExpired)
+					}
+				}).catch((e) => {
+					console.error(e)
+					uni.showModal({
+						showCancel: false,
+						content: '微信登录失败，请稍后再试'
+					})
+				})
+			},
 		},
 		onReady() {
 			this.initPosition();
