@@ -30,8 +30,6 @@
 		</view>
 		<view class="action-row">
 			<navigator url="../reg/reg">注册账号</navigator>
-			<!-- <text>|</text>
-			<navigator url="../pwd/pwd">忘记密码</navigator> -->
 		</view>
 		<view class="oauth-row" v-if="hasProvider" v-bind:style="{top: positionTop + 'px'}">
 			<view class="oauth-image" v-for="provider in providerList" :key="provider.value">
@@ -51,6 +49,7 @@
 	} from 'vuex'
 	import mInput from '../../components/m-input.vue'
 
+	let weixinAuthService
 	export default {
 		components: {
 			mInput
@@ -71,6 +70,18 @@
 			}
 		},
 		computed: mapState(['forcedLogin']),
+		onLoad() {
+			// #ifdef APP-PLUS
+			plus.oauth.getServices((services) => {
+				weixinAuthService = services.find((service) => {
+					return service.id === 'weixin'
+				})
+				if (weixinAuthService) {
+					this.hasWeixinAuth = true
+				}
+			});
+			// #endif
+		},
 		methods: {
 			...mapMutations(['login']),
 			initProvider() {
@@ -311,17 +322,28 @@
 					});
 					return;
 				}
+				
 				return new Promise((resolve, reject) => {
+					// #ifdef APP-PLUS
+					weixinAuthService.authorize(function(res) {
+						resolve(res.code)
+					}, function(err) {
+						console.error(err)
+						reject(new Error('微信登录失败'))
+					});
+					// #endif
+					// #ifdef MP-WEIXIN
 					uni.login({
-						provider: value,
-						success: (res) => {
+						provider: 'weixin',
+						success(res) {
 							resolve(res.code)
 						},
-						fail: (err) => {
-							reject(new error(`${value}平台登录失败`))
+						fail(err) {
 							console.error('授权登录失败：' + JSON.stringify(err));
+							reject(new Error('微信登录失败'))
 						}
-					});
+					})
+					// #endif
 				})
 			},
 			getUserInfo({
@@ -357,23 +379,6 @@
 				}
 
 			},
-			getWeixinCode() {
-				return new Promise((resolve, reject) => {
-					uni.login({
-						provider: 'weixin',
-						success(res) {
-							console.log('----------------')
-							console.log(res);
-							resolve(res.code)
-						},
-						fail(err) {
-							console.log('----------------')
-							console.log(err);
-							reject(new Error('微信登录失败'))
-						}
-					})
-				})
-			},
 			loginByWeixin(value) {
 				this.oauth(value).then((code) => {
 					return uniCloud.callFunction({
@@ -386,11 +391,8 @@
 						}
 					})
 				}).then((res) => {
-					uni.showModal({
-						showCancel: false,
-						content: JSON.stringify(res.result)
-					})
 					if (res.result.code === 0) {
+						this.toMain('微信用户')
 						uni.setStorageSync('uni_id_token', res.result.token)
 						uni.setStorageSync('uni_id_token_expired', res.result.tokenExpired)
 					}
