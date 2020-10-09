@@ -2,4 +2,4 @@ node_modules/
 .project
 unpackage/
 .DS_Store
-devScript/
+dev-script/
