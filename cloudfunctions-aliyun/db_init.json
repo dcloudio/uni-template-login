@@ -97,7 +97,7 @@
 			}
 		}]
 	},
-	"uni-verify": {
+	"opendb-verify-codes": {
 		"data": [],
 		"index": [{
 			"IndexName": "mobile",
