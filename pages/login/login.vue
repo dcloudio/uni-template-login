@@ -132,7 +132,8 @@
 					data: {
 						action: 'sendSmsCode',
 						params: {
-							mobile: this.mobile
+							mobile: this.mobile,
+							type: 'login'
 						}
 					},
 					success: (e) => {

@@ -9,7 +9,9 @@ exports.main = async (event, context) => {
 
 	let params = event.params || {}
 	let payload = {}
-	let noCheckAction = ['register', 'loginByWeixin', 'checkToken', 'login', 'logout', 'sendSmsCode', 'loginBySms', 'inviteLogin']
+	let noCheckAction = ['register', 'loginByWeixin', 'checkToken', 'login', 'logout', 'sendSmsCode', 'loginBySms',
+		'inviteLogin'
+	]
 
 	if (noCheckAction.indexOf(event.action) === -1) {
 		if (!event.uniIdToken) {
@@ -55,12 +57,20 @@ exports.main = async (event, context) => {
 					msg: '请求过于频繁'
 				}
 			}
+			const templateId = '' // 替换为自己申请的模板id
+			if (!templateId) {
+				return {
+					code: 500,
+					msg: 'sendSmsCode需要传入自己的templateId，参考https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=sendsmscode'
+				}
+			}
 			const randomStr = '00000' + Math.floor(Math.random() * 1000000)
 			const code = randomStr.substring(randomStr.length - 6)
 			res = await uniID.sendSmsCode({
 				mobile: params.mobile,
 				code,
-				type: params.type
+				type: params.type,
+				templateId
 			})
 			break;
 		case 'loginBySms':
