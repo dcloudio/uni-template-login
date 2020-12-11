@@ -15,7 +15,7 @@
 			</view>
 		</view>
 		<view class="btn-row">
-			<button type="primary" class="primary" @tap="register">注册</button>
+			<button type="primary" class="primary" @tap="register">注册并登陆</button>
 		</view>
 	</view>
 </template>
@@ -73,7 +73,7 @@
 						params: data
 					},
 					success(e) {
-						console.log("注册成功", e);
+						console.log("注册", e);
 
 						if (e.result.code === 0) {
 							uni.showToast({

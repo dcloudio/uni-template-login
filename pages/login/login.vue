@@ -26,14 +26,14 @@
 			</view>
 		</view>
 		<view class="btn-row">
-			<button type="primary" class="primary" @tap="bindLogin">登录</button>
+			<button type="primary" class="primary" :loading="loginBtnLoading" @tap="bindLogin">登录</button>
 		</view>
 		<view class="action-row">
 			<navigator url="../reg/reg">注册账号</navigator>
 		</view>
 		<view class="oauth-row" v-if="hasProvider" v-bind:style="{top: positionTop + 'px'}">
 			<view class="oauth-image" v-for="provider in providerList" :key="provider.value">
-				<image :src="provider.image" @tap="loginByWeixin(provider.value)"></image>
+				<image :src="provider.image" @tap="toLogin(provider.value)"></image>
 				<!-- #ifdef MP-WEIXIN -->
 				<button v-if="!isDevtools" open-type="getUserInfo" @getuserinfo="getUserInfo"></button>
 				<!-- #endif -->
@@ -66,7 +66,9 @@
 				password: '',
 				positionTop: 0,
 				isDevtools: false,
-				codeDuration: 0
+				codeDuration: 0,
+				univerifyErrorMsg: '',
+				loginBtnLoading: false
 			}
 		},
 		computed: mapState(['forcedLogin']),
@@ -85,11 +87,14 @@
 		methods: {
 			...mapMutations(['login']),
 			initProvider() {
-				const filters = ['weixin', 'qq', 'sinaweibo'];
+				const filters = ['weixin', 'qq', 'sinaweibo', 'univerify'];
 				uni.getProvider({
 					service: 'oauth',
 					success: (res) => {
 						if (res.provider && res.provider.length) {
+							if (res.provider.indexOf('univerify') !== -1) {
+								this.univerifyPreLogin();
+							}
 							for (let i = 0; i < res.provider.length; i++) {
 								if (~filters.indexOf(res.provider[i])) {
 									this.providerList.push({
@@ -192,7 +197,7 @@
 					password: this.password
 				};
 				let _self = this;
-
+				this.loginBtnLoading = true
 				uniCloud.callFunction({
 					name: 'user-center',
 					data: {
@@ -217,11 +222,14 @@
 						}
 
 					},
-					fail(e) {
+					fail: (e) => {
 						uni.showModal({
 							content: JSON.stringify(e),
 							showCancel: false
 						})
+					},
+					complete: () => {
+						this.loginBtnLoading = false
 					}
 				})
 			},
@@ -291,39 +299,6 @@
 				}
 			},
 			oauth(value) {
-				if (value !== 'weixin') {
-					uni.showModal({
-						content: `${value}登录只演示登录api能力，暂未关联云端数据`,
-						showCancel: false
-					})
-					console.log(`${value}登录只演示登录api能力，暂未关联云端数据`);
-					uni.login({
-						provider: value,
-						success: (res) => {
-							uni.getUserInfo({
-								provider: value,
-								success: (infoRes) => {
-									/**
-									 * 实际开发中，获取用户信息后，需要将信息上报至服务端。
-									 * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。
-									 */
-									this.loginLocal(infoRes.userInfo.nickName);
-								},
-								fail() {
-									uni.showToast({
-										icon: 'none',
-										title: '登陆失败'
-									});
-								}
-							});
-						},
-						fail: (err) => {
-							console.error('授权登录失败：' + JSON.stringify(err));
-						}
-					});
-					return;
-				}
-				
 				return new Promise((resolve, reject) => {
 					// #ifdef APP-PLUS
 					weixinAuthService.authorize(function(res) {
@@ -380,6 +355,47 @@
 				}
 
 			},
+			toLogin(value) {
+				if (value === 'weixin') {
+					this.loginByWeixin(value)
+					return;
+				}
+				if (value === 'univerify') {
+					this.loginByUniverify(value)
+					return;
+				}
+				uni.showModal({
+					content: `${value}登录只演示登录api能力，暂未关联云端数据`,
+					showCancel: false,
+					complete: () => {
+						console.log(`${value}登录只演示登录api能力，暂未关联云端数据`);
+						uni.login({
+							provider: value,
+							success: (res) => {
+								uni.getUserInfo({
+									provider: value,
+									success: (infoRes) => {
+										/**
+										 * 实际开发中，获取用户信息后，需要将信息上报至服务端。
+										 * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。
+										 */
+										this.loginLocal(infoRes.userInfo.nickName);
+									},
+									fail() {
+										uni.showToast({
+											icon: 'none',
+											title: '登陆失败'
+										});
+									}
+								});
+							},
+							fail: (err) => {
+								console.error('授权登录失败：' + JSON.stringify(err));
+							}
+						});
+					}
+				})
+			},
 			loginByWeixin(value) {
 				this.oauth(value).then((code) => {
 					return uniCloud.callFunction({
@@ -403,6 +419,99 @@
 						showCancel: false,
 						content: '微信登录失败，请稍后再试'
 					})
+				})
+			},
+			univerifyPreLogin() {
+				uni.preLogin({
+					provider: 'univerify',
+					success: (res) => {
+						// 成功
+						this.univerifyErrorMsg = '';
+					},
+					fail: (res) => {
+						this.univerifyErrorMsg = res.errMsg;
+					}
+				})
+			},
+			loginByUniverify(value) {
+				uni.login({
+					provider: value,
+					success: (res) => {
+						uni.closeAuthView();
+						const {
+							access_token,
+							openid
+						} = res.authResult
+
+						// 注意大小写
+						const univerifyInfo = {
+							accessToken: access_token,
+							openid
+						}
+
+						uni.showLoading()
+						uniCloud.callFunction({
+							name: 'user-center',
+							data: {
+								action: 'loginByUniverify',
+								params: univerifyInfo
+							},
+							success: (e) => {
+								console.log('login success', e);
+
+								if (e.result.code == 0) {
+									const username = e.result.username || e.result.mobile || '一键登录新用户'
+									uni.setStorageSync('uniIdToken', e.result.token)
+									uni.setStorageSync('username', username)
+									uni.setStorageSync('login_type', 'online')
+									this.toMain(username);
+								} else {
+									uni.showModal({
+										content: e.result.msg,
+										showCancel: false
+									})
+									console.log('登录失败', e);
+								}
+
+							},
+							fail: (e) => {
+								uni.showModal({
+									content: JSON.stringify(e),
+									showCancel: false
+								})
+							},
+							complete: () => {
+								uni.hideLoading()
+							}
+						})
+					},
+					fail: (err) => {
+						console.error('授权登录失败：' + JSON.stringify(err));
+						if (err.code == '30002') {
+							uni.closeAuthView();
+							uni.showToast({
+								title: '其他登录方式',
+								duration: 1000
+							});
+							return;
+						}
+						if (err.code == '30005') {
+							// 预登陆失败
+							uni.showModal({
+								title: '预登陆失败',
+								content: JSON.stringify(this.univerifyErrorMsg)
+							});
+							return;
+						}
+						if (err.code != '30003') {
+							//用户关闭验证界面
+							uni.showModal({
+								title: '登录失败',
+								content: JSON.stringify(err)
+							});
+						}
+
+					}
 				})
 			},
 		},

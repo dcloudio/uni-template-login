@@ -10,7 +10,7 @@ exports.main = async (event, context) => {
 	let params = event.params || {}
 	let payload = {}
 	let noCheckAction = ['register', 'loginByWeixin', 'checkToken', 'login', 'logout', 'sendSmsCode', 'loginBySms',
-		'inviteLogin'
+		'inviteLogin', 'loginByUniverify'
 	]
 
 	if (noCheckAction.indexOf(event.action) === -1) {
@@ -112,6 +112,9 @@ exports.main = async (event, context) => {
 			break;
 		case 'getInvitedUser':
 			res = await uniID.getInvitedUser(params)
+			break;
+		case 'loginByUniverify':
+			res = await uniID.loginByUniverify(params)
 			break;
 		default:
 			res = {

@@ -47,7 +47,7 @@
 				</view>
 			</view>
 			<view class="btn-row">
-				<button v-if="hasLogin" class="primary" type="primary" @tap="bindLogout">退出登录</button>
+				<button v-if="hasLogin" class="primary" type="primary" :loading="logoutBtnLoading" @tap="bindLogout">退出登录</button>
 			</view>
 		</view>
 	</view>
@@ -63,7 +63,8 @@
 		data() {
 			return {
 				avatarUrl: "../../static/img/logo.png",
-				inviteUrl: ''
+				inviteUrl: '',
+				logoutBtnLoading: false
 			}
 		},
 		computed: {
@@ -76,8 +77,8 @@
 				if (!this.hasLogin) {
 					uni.navigateTo({
 						url: '../login/login',
-					});					
-				} 
+					});
+				}
 			},
 			bindLogout() {
 				const loginType = uni.getStorageSync('login_type')
@@ -90,7 +91,7 @@
 					}
 					return
 				}
-
+				this.logoutBtnLoading = true
 				uniCloud.callFunction({
 					name: 'user-center',
 					data: {
@@ -122,11 +123,14 @@
 						}
 
 					},
-					fail(e) {
+					fail: (e) => {
 						uni.showModal({
 							content: JSON.stringify(e),
 							showCancel: false
 						})
+					},
+					complete: () => {
+						this.logoutBtnLoading = false
 					}
 				})
 			},
