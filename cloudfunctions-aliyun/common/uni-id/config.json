@@ -41,7 +41,6 @@
 			"smsSecret": "your sms secret"
 		},
 		"univerify": {
-			"appid": "your appid",
 			"apiKey": "your apiKey",
 			"apiSecret": "your apiSecret"
 		}
