@@ -6,11 +6,26 @@
 
 	export default {
 		onLaunch: function() {
+			console.log('App Launch');
 			let uniIdToken = uni.getStorageSync('uniIdToken')
 			if (uniIdToken) {
 				this.login(uni.getStorageSync('username'))
 			}
-			console.log('App Launch');
+
+			// #ifdef APP-PLUS
+			// 一键登录预登陆，可以显著提高登录速度
+			uni.preLogin({
+				provider: 'univerify',
+				success: (res) => {
+					this.setUniverifyErrorMsg()
+					console.log("preLogin success: ", res);
+				},
+				fail: (res) => {
+					this.setUniverifyErrorMsg(res.errMsg)
+					console.log("preLogin fail: ", res);
+				}
+			})
+			// #endif
 		},
 		onShow: function() {
 			console.log('App Show');
@@ -19,7 +34,7 @@
 			console.log('App Hide');
 		},
 		methods: {
-			...mapMutations(['login']),
+			...mapMutations(['login', 'setUniverifyErrorMsg']),
 		}
 	}
 </script>

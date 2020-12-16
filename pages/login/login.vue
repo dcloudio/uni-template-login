@@ -67,11 +67,10 @@
 				positionTop: 0,
 				isDevtools: false,
 				codeDuration: 0,
-				univerifyErrorMsg: '',
 				loginBtnLoading: false
 			}
 		},
-		computed: mapState(['forcedLogin']),
+		computed: mapState(['forcedLogin', 'univerifyErrorMsg']),
 		onLoad() {
 			// #ifdef APP-PLUS
 			plus.oauth.getServices((services) => {
@@ -92,9 +91,6 @@
 					service: 'oauth',
 					success: (res) => {
 						if (res.provider && res.provider.length) {
-							if (res.provider.indexOf('univerify') !== -1) {
-								this.univerifyPreLogin();
-							}
 							for (let i = 0; i < res.provider.length; i++) {
 								if (~filters.indexOf(res.provider[i])) {
 									this.providerList.push({
@@ -421,19 +417,8 @@
 					})
 				})
 			},
-			univerifyPreLogin() {
-				uni.preLogin({
-					provider: 'univerify',
-					success: (res) => {
-						// 成功
-						this.univerifyErrorMsg = '';
-					},
-					fail: (res) => {
-						this.univerifyErrorMsg = res.errMsg;
-					}
-				})
-			},
 			loginByUniverify(value) {
+				// 一键登录已在APP onLaunch的时候进行了预登陆，可以显著提高登录速度。登录成功后，预登陆状态会重置
 				uni.login({
 					provider: value,
 					success: (res) => {

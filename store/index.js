@@ -10,7 +10,8 @@ const store = new Vuex.Store({
 		 */
 		forcedLogin: false,
 		hasLogin: false,
-		userName: ""
+		userName: "",
+		univerifyErrorMsg: ""
 	},
 	mutations: {
 		login(state, userName) {
@@ -20,6 +21,9 @@ const store = new Vuex.Store({
 		logout(state) {
 			state.userName = "";
 			state.hasLogin = false;
+		},
+		setUniverifyErrorMsg(state, payload = '') {
+			state.univerifyErrorMsg = payload
 		}
 	}
 })
