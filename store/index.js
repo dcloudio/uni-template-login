@@ -11,7 +11,8 @@ const store = new Vuex.Store({
 		forcedLogin: false,
 		hasLogin: false,
 		userName: "",
-		univerifyErrorMsg: ""
+		univerifyErrorMsg: "",
+		hideUniverify: true
 	},
 	mutations: {
 		login(state, userName) {
@@ -24,6 +25,9 @@ const store = new Vuex.Store({
 		},
 		setUniverifyErrorMsg(state, payload = '') {
 			state.univerifyErrorMsg = payload
+		},
+		setHideUniverify(state, payload = false) {
+			state.hideUniverify = payload
 		}
 	}
 })

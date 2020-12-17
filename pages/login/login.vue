@@ -7,7 +7,7 @@
 		<view class="input-group" v-if="loginType === 0">
 			<view class="input-row border">
 				<text class="title">手机：</text>
-				<m-input class="m-input" type="text" clearable focus v-model="mobile" placeholder="请输入手机号码"></m-input>
+				<m-input class="m-input" type="text" clearable :focus="hideUniverify" v-model="mobile" placeholder="请输入手机号码"></m-input>
 			</view>
 			<view class="input-row">
 				<text class="title">验证码：</text>
@@ -18,7 +18,7 @@
 		<view class="input-group" v-else>
 			<view class="input-row border">
 				<text class="title">账号：</text>
-				<m-input class="m-input" type="text" clearable focus v-model="username" placeholder="请输入账号"></m-input>
+				<m-input class="m-input" type="text" clearable :focus="hideUniverify" v-model="username" placeholder="请输入账号"></m-input>
 			</view>
 			<view class="input-row">
 				<text class="title">密码：</text>
@@ -70,7 +70,7 @@
 				loginBtnLoading: false
 			}
 		},
-		computed: mapState(['forcedLogin', 'univerifyErrorMsg']),
+		computed: mapState(['forcedLogin', 'univerifyErrorMsg', 'hideUniverify']),
 		onLoad() {
 			// #ifdef APP-PLUS
 			plus.oauth.getServices((services) => {
@@ -81,6 +81,9 @@
 					this.hasWeixinAuth = true
 				}
 			});
+			if (!this.hideUniverify) {
+				this.loginByUniverify()
+			}
 			// #endif
 		},
 		methods: {
@@ -92,10 +95,11 @@
 					success: (res) => {
 						if (res.provider && res.provider.length) {
 							for (let i = 0; i < res.provider.length; i++) {
-								if (~filters.indexOf(res.provider[i])) {
+								const curProvider = res.provider[i];
+								if (~filters.indexOf(curProvider)) {
 									this.providerList.push({
-										value: res.provider[i],
-										image: '../../static/img/' + res.provider[i] + '.png'
+										value: curProvider,
+										image: '../../static/img/' + curProvider + '.png'
 									});
 								}
 							}
@@ -417,29 +421,19 @@
 					})
 				})
 			},
-			loginByUniverify(value) {
+			loginByUniverify(value = 'univerify') {
 				// 一键登录已在APP onLaunch的时候进行了预登陆，可以显著提高登录速度。登录成功后，预登陆状态会重置
 				uni.login({
 					provider: value,
 					success: (res) => {
 						uni.closeAuthView();
-						const {
-							access_token,
-							openid
-						} = res.authResult
-
-						// 注意大小写
-						const univerifyInfo = {
-							accessToken: access_token,
-							openid
-						}
-
-						uni.showLoading()
+						uni.showLoading();
+						
 						uniCloud.callFunction({
 							name: 'user-center',
 							data: {
 								action: 'loginByUniverify',
-								params: univerifyInfo
+								params: res.authResult
 							},
 							success: (e) => {
 								console.log('login success', e);
@@ -461,7 +455,7 @@
 							},
 							fail: (e) => {
 								uni.showModal({
-									content: JSON.stringify(e),
+									content: e.errMsg,
 									showCancel: false
 								})
 							},
@@ -472,6 +466,8 @@
 					},
 					fail: (err) => {
 						console.error('授权登录失败：' + JSON.stringify(err));
+
+						// 一键登录点击其他登录方式
 						if (err.code == '30002') {
 							uni.closeAuthView();
 							uni.showToast({
@@ -480,17 +476,38 @@
 							});
 							return;
 						}
-						if (err.code == '30005') {
-							// 预登陆失败
+
+						// 未开通
+						if (err.code == 1000) {
 							uni.showModal({
+								title: '登陆失败',
+								content: `${err.errMsg}\n，错误码：${err.code}`,
+								confirmText: '开通指南',
+								cancelText: '确定',
+								success: (res) => {
+									if (res.confirm) {
+										setTimeout(() => {
+											plus.runtime.openWeb('https://ask.dcloud.net.cn/article/37965')
+										}, 500)
+									}
+								}
+							});
+						}
+
+						// 预登陆失败
+						if (err.code == '30005') {
+							uni.showModal({
+								showCancel: false,
 								title: '预登陆失败',
-								content: JSON.stringify(this.univerifyErrorMsg)
+								content: this.univerifyErrorMsg || err.errMsg
 							});
 							return;
 						}
+
+						//用户关闭验证界面
 						if (err.code != '30003') {
-							//用户关闭验证界面
 							uni.showModal({
+								showCancel: false,
 								title: '登录失败',
 								content: JSON.stringify(err)
 							});
