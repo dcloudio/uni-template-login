@@ -96,7 +96,7 @@ export function univerifyErrorHandler(err, cb) {
 		case err.code == 1000:
 			uni.showModal(Object.assign({
 				title: `登录失败: ${err.code}`,
-				content: `${err.errMsg}，开通指南：https://ask.dcloud.net.cn/article/37965`,
+				content: `${err.errMsg}\n开通指南：https://ask.dcloud.net.cn/article/37965`,
 				/* confirmText: '开通指南',
 				cancelText: '确定',
 				success: (res) => {
@@ -112,16 +112,16 @@ export function univerifyErrorHandler(err, cb) {
 		case err.code == 30005:
 			uni.showModal(Object.assign({
 				showCancel: false,
-				title: `预登录失败: ${err.code}`,
-				content: state.univerifyErrorMsg || err.errMsg
+				title: `预登录失败[${err.code}]`,
+				content: `${state.univerifyErrorMsg || err.errMsg}\nhttps://ask.dcloud.net.cn/article/282`
 			}, obj));
 			break;
 			//用户关闭验证界面
 		case err.code != 30003:
 			uni.showModal(Object.assign({
 				showCancel: false,
-				title: '登录失败:',
-				content: `${err.errMsg}，错误码: ${err.code}`,
+				title: `登录失败[${err.code}]`,
+				content: `${err.errMsg}\nhttps://ask.dcloud.net.cn/article/282`,
 			}, obj));
 			break;
 	}
