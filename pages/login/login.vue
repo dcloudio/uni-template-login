@@ -346,14 +346,9 @@
 				 * 强制登录时使用reLaunch方式跳转过来
 				 * 返回首页也使用reLaunch方式
 				 */
-				if (this.forcedLogin) {
-					uni.reLaunch({
-						url: '../main/main',
-					});
-				} else {
-					uni.navigateBack();
-				}
-
+				uni.reLaunch({
+					url: '../main/main',
+				});
 			},
 			toLogin(value) {
 				if (value === 'weixin') {

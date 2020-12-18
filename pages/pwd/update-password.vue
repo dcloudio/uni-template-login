@@ -22,8 +22,7 @@
 					<text class="uni-icon-password-eye pointer" :class="[!showPasswordAgain ? 'uni-eye-active' : '']" @click="changePasswordAgain">&#xe568;</text>
 				</uni-forms-item>
 				<view class="uni-button-group pointer">
-					<button class="uni-button uni-button-full" type="primary" :disabled="isLoading" @click="submitForm">保存</button>
-					<button v-if="hasBackButton" class="uni-button login-button-width" type="default" :disabled="isLoading" @click="back">返回</button>
+					<button class="uni-button uni-button-full" type="primary" @click="submitForm">保存</button>
 				</view>
 			</uni-forms>
 		</view>
@@ -38,7 +37,6 @@
 	export default {
 		data() {
 			return {
-				isLoading: false,
 				showPassword: true,
 				showPasswordAgain: true,
 				errorMessage: '',
@@ -93,22 +91,18 @@
 			...mapState('user', ['userInfo'])
 		},
 		methods: {
-			...mapMutations({
-				removeToken(commit) {
-					commit('user/REMOVE_TOKEN')
-				}
-			}),
+			...mapMutations(['logout']),
 			submit(event) {
 				const {
 					errors,
 					value
 				} = event.detail
 				if (errors) return
-				if (value.newPassword === value.passwordConfirmation) {
-					this.save(value)
-				} else {
+				if (value.newPassword !== value.passwordConfirmation) {
 					this.errorMessage = '两次输入密码不相同'
-				}
+					return
+				} 
+				this.save(value)
 			},
 			confirmForm(name, value) {
 				this.binddata(name, value)
@@ -120,8 +114,7 @@
 			},
 			save(formData) {
 				let that = this
-				that.isLoading = true
-
+				uni.showLoading()
 				uniCloud.callFunction({
 					name: 'user-center',
 					data: {
@@ -131,7 +124,7 @@
 						}
 					},
 					success: (res) => {
-						console.log('success----', res)
+						uni.hideLoading()
 						if (res.result.code === 0) {
 							uni.showModal({
 								title: '提示',
@@ -139,66 +132,31 @@
 								showCancel: false,
 								success: (res) => {
 									if (res.confirm) {
-										this.logout();
+										that.logout();
 										uni.removeStorageSync('uni_id_token')
 										uni.removeStorageSync('username')
 										uni.reLaunch({
-											url: 'page/login/login'
+											url: 'pages/login/login'
 										})
 									}
 								}
 							});
 						} else {
 							uni.showToast({
-								title: res.data.msg,
+								title: res.result.msg,
 								icon: 'none',
 								duration: 2000
 							})
 						}
-
 					},
 					fail: (e) => {
-						console.log('fail---', e)
-						that.isLoading = false
+						uni.hideLoading()
 						uni.showModal({
 							content: '修改密码失败',
 							showCancel: false
 						})
 					}
 				})
-
-				// this.$request('self/changePwd', formData).then(res => {
-				// 	this.isLoading = false
-				// 	if (res.code === 0) {
-				// 		uni.showModal({
-				// 			title: '提示',
-				// 			content: res.msg,
-				// 			showCancel: false,
-				// 			success: (res) => {
-				// 				if (res.confirm) {
-				// 					this.$emit('closePasswordPopup')
-				// 					this.removeToken()
-				// 					uni.reLaunch({
-				// 						url: 'page/login/login'
-				// 					})
-				// 				}
-				// 			}
-				// 		});
-				// 	} else {
-				// 		uni.showToast({
-				// 			title: res.msg,
-				// 			icon: 'none',
-				// 			duration: 2000
-				// 		})
-				// 	}
-				// }).catch(res => {
-
-				// }).finally(err => {
-				// 	this.isLoading = false
-				// })
-			},
-			back() {
-				uni.navigateBack()
 			},
 			changePassword: function() {
 				this.showPassword = !this.showPassword;
