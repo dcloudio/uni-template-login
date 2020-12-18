@@ -7,7 +7,7 @@
 		<view class="input-group" v-if="loginType === 0">
 			<view class="input-row border">
 				<text class="title">手机：</text>
-				<m-input class="m-input" type="text" clearable :focus="hideUniverify" v-model="mobile" placeholder="请输入手机号码"></m-input>
+				<m-input class="m-input" type="text" clearable focus v-model="mobile" placeholder="请输入手机号码"></m-input>
 			</view>
 			<view class="input-row">
 				<text class="title">验证码：</text>
@@ -18,7 +18,7 @@
 		<view class="input-group" v-else>
 			<view class="input-row border">
 				<text class="title">账号：</text>
-				<m-input class="m-input" type="text" clearable :focus="hideUniverify" v-model="username" placeholder="请输入账号"></m-input>
+				<m-input class="m-input" type="text" clearable focus v-model="username" placeholder="请输入账号"></m-input>
 			</view>
 			<view class="input-row">
 				<text class="title">密码：</text>
@@ -48,6 +48,9 @@
 		mapMutations
 	} from 'vuex'
 	import mInput from '../../components/m-input.vue'
+	import {
+		univerifyLogin
+	} from '@/common/univerify.js'
 
 	let weixinAuthService
 	export default {
@@ -81,9 +84,6 @@
 					this.hasWeixinAuth = true
 				}
 			});
-			if (!this.hideUniverify) {
-				this.loginByUniverify()
-			}
 			// #endif
 		},
 		methods: {
@@ -361,7 +361,7 @@
 					return;
 				}
 				if (value === 'univerify') {
-					this.loginByUniverify(value)
+					univerifyLogin()
 					return;
 				}
 				uni.showModal({
@@ -420,102 +420,7 @@
 						content: '微信登录失败，请稍后再试'
 					})
 				})
-			},
-			loginByUniverify(value = 'univerify') {
-				// 一键登录已在APP onLaunch的时候进行了预登陆，可以显著提高登录速度。登录成功后，预登陆状态会重置
-				uni.login({
-					provider: value,
-					success: (res) => {
-						uni.closeAuthView();
-						uni.showLoading();
-						
-						uniCloud.callFunction({
-							name: 'user-center',
-							data: {
-								action: 'loginByUniverify',
-								params: res.authResult
-							},
-							success: (e) => {
-								console.log('login success', e);
-
-								if (e.result.code == 0) {
-									const username = e.result.username || e.result.mobile || '一键登录新用户'
-									uni.setStorageSync('uniIdToken', e.result.token)
-									uni.setStorageSync('username', username)
-									uni.setStorageSync('login_type', 'online')
-									this.toMain(username);
-								} else {
-									uni.showModal({
-										content: e.result.msg,
-										showCancel: false
-									})
-									console.log('登录失败', e);
-								}
-
-							},
-							fail: (e) => {
-								uni.showModal({
-									content: e.errMsg,
-									showCancel: false
-								})
-							},
-							complete: () => {
-								uni.hideLoading()
-							}
-						})
-					},
-					fail: (err) => {
-						console.error('授权登录失败：' + JSON.stringify(err));
-
-						// 一键登录点击其他登录方式
-						if (err.code == '30002') {
-							uni.closeAuthView();
-							uni.showToast({
-								title: '其他登录方式',
-								duration: 1000
-							});
-							return;
-						}
-
-						// 未开通
-						if (err.code == 1000) {
-							uni.showModal({
-								title: '登陆失败',
-								content: `${err.errMsg}\n，错误码：${err.code}`,
-								confirmText: '开通指南',
-								cancelText: '确定',
-								success: (res) => {
-									if (res.confirm) {
-										setTimeout(() => {
-											plus.runtime.openWeb('https://ask.dcloud.net.cn/article/37965')
-										}, 500)
-									}
-								}
-							});
-						}
-
-						// 预登陆失败
-						if (err.code == '30005') {
-							uni.showModal({
-								showCancel: false,
-								title: '预登陆失败',
-								content: this.univerifyErrorMsg || err.errMsg
-							});
-							return;
-						}
-
-						//用户关闭验证界面
-						if (err.code != '30003') {
-							uni.showModal({
-								showCancel: false,
-								title: '登录失败',
-								content: JSON.stringify(err)
-							});
-						}
-
-					}
-				})
-			},
+			}
 		},
 		onReady() {
 			this.initPosition();

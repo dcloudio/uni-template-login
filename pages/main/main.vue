@@ -26,6 +26,9 @@
 		mapState,
 		mapMutations
 	} from 'vuex'
+	import {
+		univerifyLogin
+	} from '@/common/univerify.js'
 
 	export default {
 		computed: mapState(['forcedLogin', 'hasLogin', 'userName']),
@@ -83,18 +86,20 @@
 					showCancel: !this.forcedLogin,
 					success: (res) => {
 						if (res.confirm) {
-							/**
-							 * 如果需要强制登录，使用reLaunch方式
-							 */
-							if (this.forcedLogin) {
-								uni.reLaunch({
-									url: '../login/login'
-								});
-							} else {
-								uni.navigateTo({
-									url: '../login/login'
-								});
-							}
+							univerifyLogin(() => {
+								/**
+								 * 如果需要强制登录，使用reLaunch方式
+								 */
+								if (this.forcedLogin) {
+									uni.reLaunch({
+										url: '../login/login'
+									});
+								} else {
+									uni.navigateTo({
+										url: '../login/login'
+									});
+								}
+							})
 						}
 					}
 				});

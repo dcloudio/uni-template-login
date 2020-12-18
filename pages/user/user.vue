@@ -58,6 +58,9 @@
 		mapState,
 		mapMutations
 	} from 'vuex'
+	import {
+		univerifyLogin
+	} from '@/common/univerify.js'
 
 	export default {
 		data() {
@@ -75,9 +78,11 @@
 			...mapMutations(['logout']),
 			bindLogin() {
 				if (!this.hasLogin) {
-					uni.navigateTo({
-						url: '../login/login',
-					});
+					univerifyLogin(() => {
+						uni.navigateTo({
+							url: '../login/login',
+						});
+					})
 				}
 			},
 			bindLogout() {
