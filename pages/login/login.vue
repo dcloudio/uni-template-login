@@ -73,7 +73,7 @@
 				loginBtnLoading: false
 			}
 		},
-		computed: mapState(['forcedLogin', 'univerifyErrorMsg', 'hideUniverify']),
+		computed: mapState(['forcedLogin', 'hasLogin', 'univerifyErrorMsg', 'hideUniverify']),
 		onLoad() {
 			// #ifdef APP-PLUS
 			plus.oauth.getServices((services) => {
@@ -209,7 +209,7 @@
 						console.log('login success', e);
 
 						if (e.result.code == 0) {
-							uni.setStorageSync('uniIdToken', e.result.token)
+							uni.setStorageSync('uni_id_token', e.result.token)
 							uni.setStorageSync('username', e.result.username)
 							uni.setStorageSync('login_type', 'online')
 							_self.toMain(_self.username);
@@ -265,7 +265,7 @@
 
 						if (e.result.code == 0) {
 							const username = e.result.username || '新用户'
-							uni.setStorageSync('uniIdToken', e.result.token)
+							uni.setStorageSync('uni_id_token', e.result.token)
 							uni.setStorageSync('username', username)
 							uni.setStorageSync('login_type', 'online')
 							_self.toMain(username);

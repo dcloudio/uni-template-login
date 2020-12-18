@@ -9,9 +9,9 @@
 				</view>
 			</view>
 			<view class="center-list">
-				<view class="center-list-item border-bottom">
+				<view class="center-list-item border-bottom" @click="goto">
 					<text class="list-icon">&#xe60f;</text>
-					<text class="list-text">帐号管理</text>
+					<text class="list-text">修改密码</text>
 					<text class="navigat-arrow">&#xe65e;</text>
 				</view>
 				<!-- #ifdef APP-PLUS -->
@@ -108,7 +108,7 @@
 
 						if (e.result.code == 0) {
 							this.logout();
-							uni.removeStorageSync('uniIdToken')
+							uni.removeStorageSync('uni_id_token')
 							uni.removeStorageSync('username')
 							/**
 							 * 如果需要强制登录跳转回登录页面
@@ -142,6 +142,11 @@
 			toInvite() {
 				uni.navigateTo({
 					url: '/pages/invite/invite'
+				})
+			},
+			goto(){
+				uni.navigateTo({
+					url: '../pwd/update-password'
 				})
 			}
 		}

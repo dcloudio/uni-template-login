@@ -3,88 +3,75 @@ import Vuex from '@/store/index.js'
 export function univerifyLogin(cb) {
 	const commit = Vuex.commit;
 	const PROVIDER = 'univerify';
-	/**
-	 * resolve() 登录成功
-	 * reject(true) 使用其他登录
-	 * reject(not true) 报错
-	 */
-	return new Promise((resolve, reject) => {
-		uni.getProvider({
-			service: 'oauth',
-			success: (res) => {
-				if (res.provider.indexOf(PROVIDER) !== -1) {
-					// 一键登录已在APP onLaunch的时候进行了预登陆，可以显著提高登录速度。登录成功后，预登陆状态会重置
-					uni.login({
-						provider: PROVIDER,
-						success: (res) => {
-							uni.closeAuthView();
-							uni.showLoading();
 
-							uniCloud.callFunction({
-								name: 'user-center',
-								data: {
-									action: 'loginByUniverify',
-									params: res.authResult
-								},
-								success: (e) => {
-									console.log('login success', e);
+	uni.getProvider({
+		service: 'oauth',
+		success: (res) => {
+			if (res.provider.indexOf(PROVIDER) !== -1) {
+				// 一键登录已在APP onLaunch的时候进行了预登陆，可以显著提高登录速度。登录成功后，预登陆状态会重置
+				uni.login({
+					provider: PROVIDER,
+					success: (res) => {
+						uni.closeAuthView();
+						uni.showLoading();
 
-									if (e.result.code == 0) {
-										resolve();
-										const username = e.result.username || e.result.mobile || '一键登录新用户'
+						uniCloud.callFunction({
+							name: 'user-center',
+							data: {
+								action: 'loginByUniverify',
+								params: res.authResult
+							},
+							success: (e) => {
+								console.log('login success', e);
 
-										uni.setStorageSync('uniIdToken', e.result.token)
-										uni.setStorageSync('username', username)
-										uni.setStorageSync('login_type', 'online')
+								if (e.result.code == 0) {
+									const username = e.result.username || e.result.mobile || '一键登录新用户'
 
-										commit('login', username)
-										uni.switchTab({
-											url: '../main/main',
-										});
-									} else {
-										uni.showModal({
-											title: `登录失败: ${e.result.code}`,
-											content: e.result.msg,
-											showCancel: false
-										})
-										reject(e);
-										console.log('登录失败', e);
-									}
+									uni.setStorageSync('uni_id_token', e.result.token)
+									uni.setStorageSync('username', username)
+									uni.setStorageSync('login_type', 'online')
 
-								},
-								fail: (e) => {
+									commit('login', username)
+									uni.switchTab({
+										url: '../main/main',
+									});
+								} else {
 									uni.showModal({
-										title: `登录失败`,
-										content: e.errMsg,
+										title: `登录失败: ${e.result.code}`,
+										content: e.result.msg,
 										showCancel: false
 									})
-									reject(e);
-								},
-								complete: () => {
-									uni.hideLoading()
+									console.log('登录失败', e);
 								}
-							})
-						},
-						fail: (err) => {
-							console.error('授权登录失败：' + JSON.stringify(err));
 
-							univerifyErrorHandler(err, cb);
+							},
+							fail: (e) => {
+								uni.showModal({
+									title: `登录失败`,
+									content: e.errMsg,
+									showCancel: false
+								})
+							},
+							complete: () => {
+								uni.hideLoading()
+							}
+						})
+					},
+					fail: (err) => {
+						console.error('授权登录失败：' + JSON.stringify(err));
 
-							reject(err);
-						}
-					})
-				} else {
-					cb && cb()
-					reject(err, true)
-				}
-			},
-			fail: (err) => {
-				console.error('获取服务供应商失败：' + JSON.stringify(err));
+						univerifyErrorHandler(err, cb);
+					}
+				})
+			} else {
 				cb && cb()
-				reject(err, true)
 			}
-		});
-	})
+		},
+		fail: (err) => {
+			console.error('获取服务供应商失败：' + JSON.stringify(err));
+			cb && cb()
+		}
+	});
 }
 
 export function univerifyErrorHandler(err, cb) {

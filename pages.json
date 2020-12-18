@@ -21,6 +21,11 @@
 				"navigationBarTitleText": "找回密码"
 			}
 		}, {
+			"path": "pages/pwd/update-password",
+			"style": {
+				"navigationBarTitleText": "修改密码"
+			}
+		}, {
 			"path": "pages/user/user",
 			"style": {
 				"navigationBarTitleText": "我的"

@@ -116,6 +116,12 @@ exports.main = async (event, context) => {
 		case 'loginByUniverify':
 			res = await uniID.loginByUniverify(params)
 			break;
+		case 'updatePwd':
+			res = await uniID.updatePwd({
+				uid: params.uid,
+				...params
+			})
+			break;
 		default:
 			res = {
 				code: 403,

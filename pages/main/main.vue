@@ -38,7 +38,7 @@
 				this.login(uni.getStorageSync('username'))
 				return
 			}
-			let uniIdToken = uni.getStorageSync('uniIdToken')
+			let uniIdToken = uni.getStorageSync('uni_id_token')
 			if (uniIdToken) {
 				this.login(uni.getStorageSync('username'))
 				uniCloud.callFunction({
@@ -52,6 +52,7 @@
 
 						if (e.result.code > 0) {
 							//token过期或token不合法，重新登录
+							console.log(111);
 							if (this.forcedLogin) {
 								uni.reLaunch({
 									url: '../login/login'
@@ -71,6 +72,7 @@
 					}
 				})
 			} else {
+				console.log(222);
 				this.guideToLogin()
 			}
 		},

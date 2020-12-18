@@ -79,7 +79,7 @@
 							uni.showToast({
 								title: '注册成功'
 							});
-							uni.setStorageSync('uniIdToken', e.result.token)
+							uni.setStorageSync('uni_id_token', e.result.token)
 							uni.setStorageSync('username', e.result.username)
 							uni.reLaunch({
 								url: '../main/main',
