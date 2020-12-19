@@ -9,7 +9,7 @@
 				</view>
 			</view>
 			<view class="center-list">
-				<view class="center-list-item border-bottom" @click="goto">
+				<view class="center-list-item border-bottom" v-show="hasLogin" @click="goto">
 					<text class="list-icon">&#xe60f;</text>
 					<text class="list-text">修改密码</text>
 					<text class="navigat-arrow">&#xe65e;</text>

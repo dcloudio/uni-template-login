@@ -1,31 +1,29 @@
 <template>
-	<view style="padding: 20px;">
+	<view style="padding: 20px;flex: 1;">
 		<view class="uni-header">
 			<view class="uni-group">
 				<view class="uni-title">修改密码</view>
 			</view>
 		</view>
-		<view class="uni-container">
-			<uni-forms ref="form" validateTrigger="bind" :rules="rules" @submit="submit">
-				<uni-forms-item label="旧密码" name="oldPassword" labelWidth="85">
-					<input class="uni-input-border" type="password" placeholder="旧密码" @blur="binddata('oldPassword',$event.detail.value)" />
-				</uni-forms-item>
+		<uni-forms ref="form" validateTrigger="bind" :rules="rules" @submit="submit">
+			<uni-forms-item label="旧密码" name="oldPassword" labelWidth="85">
+				<input class="uni-input-border" type="password" placeholder="旧密码" @blur="binddata('oldPassword',$event.detail.value)" />
+			</uni-forms-item>
 
-				<uni-forms-item label="新密码" name="newPassword" labelWidth="85">
-					<input class="uni-input-border" :password="showPassword" placeholder="新密码" @blur="binddata('newPassword',$event.detail.value)" />
-					<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
-				</uni-forms-item>
+			<uni-forms-item label="新密码" name="newPassword" labelWidth="85">
+				<input class="uni-input-border" :password="showPassword" placeholder="新密码" @blur="binddata('newPassword',$event.detail.value)" />
+				<text class="uni-icon-password-eye pointer" :class="[!showPassword ? 'uni-eye-active' : '']" @click="changePassword">&#xe568;</text>
+			</uni-forms-item>
 
-				<uni-forms-item label="确认新密码" name="passwordConfirmation" labelWidth="85" :errorMessage="errorMessage">
-					<input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" class="uni-input-border" :password="showPasswordAgain"
-					 placeholder="确认新密码" @blur="binddata('passwordConfirmation',$event.detail.value)" />
-					<text class="uni-icon-password-eye pointer" :class="[!showPasswordAgain ? 'uni-eye-active' : '']" @click="changePasswordAgain">&#xe568;</text>
-				</uni-forms-item>
-				<view class="uni-button-group pointer">
-					<button class="uni-button uni-button-full" type="primary" @click="submitForm">保存</button>
-				</view>
-			</uni-forms>
-		</view>
+			<uni-forms-item label="确认新密码" name="passwordConfirmation" labelWidth="85" :errorMessage="errorMessage">
+				<input @confirm="confirmForm('passwordConfirmation',$event.detail.value)" class="uni-input-border" :password="showPasswordAgain"
+				 placeholder="确认新密码" @blur="binddata('passwordConfirmation',$event.detail.value)" />
+				<text class="uni-icon-password-eye pointer" :class="[!showPasswordAgain ? 'uni-eye-active' : '']" @click="changePasswordAgain">&#xe568;</text>
+			</uni-forms-item>
+			<view class="uni-button-group pointer">
+				<button class="uni-button uni-button-full" type="primary" @click="submitForm">保存</button>
+			</view>
+		</uni-forms>
 	</view>
 </template>
 
@@ -101,7 +99,7 @@
 				if (value.newPassword !== value.passwordConfirmation) {
 					this.errorMessage = '两次输入密码不相同'
 					return
-				} 
+				}
 				this.save(value)
 			},
 			confirmForm(name, value) {
@@ -136,7 +134,7 @@
 										uni.removeStorageSync('uni_id_token')
 										uni.removeStorageSync('username')
 										uni.reLaunch({
-											url: 'pages/login/login'
+											url: '/pages/login/login'
 										})
 									}
 								}
@@ -170,14 +168,6 @@
 
 
 <style>
-	.uni-forms {
-		width: 100%;
-	}
-
-	.login-button-width {
-		width: 184px;
-	}
-
 	/* 标题栏 */
 	.uni-header {
 		padding: 0 15px;
