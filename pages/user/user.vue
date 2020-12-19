@@ -9,7 +9,7 @@
 				</view>
 			</view>
 			<view class="center-list">
-				<view class="center-list-item border-bottom" v-show="hasLogin" @click="goto">
+				<view class="center-list-item border-bottom" v-show="hasLogin && hasPwd" @click="goto">
 					<text class="list-icon">&#xe60f;</text>
 					<text class="list-text">修改密码</text>
 					<text class="navigat-arrow">&#xe65e;</text>
@@ -67,7 +67,8 @@
 			return {
 				avatarUrl: "../../static/img/logo.png",
 				inviteUrl: '',
-				logoutBtnLoading: false
+				logoutBtnLoading: false,
+				hasPwd:uni.getStorageSync('uni_id_has_pwd')
 			}
 		},
 		computed: {
@@ -110,6 +111,7 @@
 							this.logout();
 							uni.removeStorageSync('uni_id_token')
 							uni.removeStorageSync('username')
+							uni.removeStorageSync('uni_id_has_pwd')
 							/**
 							 * 如果需要强制登录跳转回登录页面
 							 */

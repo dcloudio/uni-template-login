@@ -212,6 +212,7 @@
 							uni.setStorageSync('uni_id_token', e.result.token)
 							uni.setStorageSync('username', e.result.username)
 							uni.setStorageSync('login_type', 'online')
+							uni.setStorageSync('uni_id_has_pwd', true)
 							_self.toMain(_self.username);
 						} else {
 							uni.showModal({
@@ -404,9 +405,12 @@
 					})
 				}).then((res) => {
 					if (res.result.code === 0) {
-						this.toMain('微信用户')
+						
 						uni.setStorageSync('uni_id_token', res.result.token)
 						uni.setStorageSync('uni_id_token_expired', res.result.tokenExpired)
+						uni.setStorageSync('login_type', 'online')
+						uni.setStorageSync('username', '微信用户')
+						this.toMain('微信用户')
 					}
 				}).catch((e) => {
 					console.error(e)
