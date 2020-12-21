@@ -68,7 +68,7 @@
 				avatarUrl: "../../static/img/logo.png",
 				inviteUrl: '',
 				logoutBtnLoading: false,
-				hasPwd:uni.getStorageSync('uni_id_has_pwd')
+				hasPwd: uni.getStorageSync('uni_id_has_pwd')
 			}
 		},
 		computed: {
@@ -79,7 +79,9 @@
 			...mapMutations(['logout']),
 			bindLogin() {
 				if (!this.hasLogin) {
-					univerifyLogin(() => {
+					univerifyLogin().catch(err => {
+						if (err === false) return;
+						
 						uni.navigateTo({
 							url: '../login/login',
 						});
@@ -146,7 +148,7 @@
 					url: '/pages/invite/invite'
 				})
 			},
-			goto(){
+			goto() {
 				uni.navigateTo({
 					url: '../pwd/update-password'
 				})

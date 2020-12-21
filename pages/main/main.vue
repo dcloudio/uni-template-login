@@ -86,7 +86,8 @@
 					showCancel: !this.forcedLogin,
 					success: (res) => {
 						if (res.confirm) {
-							univerifyLogin(() => {
+							univerifyLogin().catch((err) => {
+								if(err === false) return;
 								/**
 								 * 如果需要强制登录，使用reLaunch方式
 								 */

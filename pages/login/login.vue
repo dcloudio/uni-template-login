@@ -49,7 +49,8 @@
 	} from 'vuex'
 	import mInput from '../../components/m-input.vue'
 	import {
-		univerifyLogin
+		univerifyLogin,
+		univerifyErrorHandler
 	} from '@/common/univerify.js'
 
 	let weixinAuthService
@@ -357,7 +358,10 @@
 					return;
 				}
 				if (value === 'univerify') {
-					univerifyLogin()
+					univerifyLogin().catch(err => {
+						if (typeof err === 'boolean') return;
+						univerifyErrorHandler(err);
+					})
 					return;
 				}
 				uni.showModal({
@@ -405,7 +409,7 @@
 					})
 				}).then((res) => {
 					if (res.result.code === 0) {
-						
+
 						uni.setStorageSync('uni_id_token', res.result.token)
 						uni.setStorageSync('uni_id_token_expired', res.result.tokenExpired)
 						uni.setStorageSync('login_type', 'online')
