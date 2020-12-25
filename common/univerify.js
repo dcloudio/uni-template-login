@@ -127,7 +127,7 @@ export function univerifyErrorHandler(err, cb) {
 			uni.showModal(Object.assign({
 				showCancel: false,
 				title: `预登录失败`,
-				content: `${state.univerifyErrorMsg || err.errMsg}，错误码：${err.code}`
+				content: `${err.errMsg}，错误码：${err.code}`
 			}, obj));
 			break;
 			//用户关闭验证界面
