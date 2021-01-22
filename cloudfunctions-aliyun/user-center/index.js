@@ -10,7 +10,7 @@ exports.main = async (event, context) => {
 	let params = event.params || {}
 	let payload = {}
 	let noCheckAction = ['register', 'loginByWeixin', 'checkToken', 'login', 'logout', 'sendSmsCode', 'loginBySms',
-		'inviteLogin', 'loginByUniverify'
+		'inviteLogin', 'loginByUniverify', 'loginByApple'
 	]
 
 	if (noCheckAction.indexOf(event.action) === -1) {
@@ -115,6 +115,9 @@ exports.main = async (event, context) => {
 			break;
 		case 'loginByUniverify':
 			res = await uniID.loginByUniverify(params)
+			break;
+		case 'loginByApple':
+			res = await uniID.loginByApple(params)
 			break;
 		case 'updatePwd':
 			res = await uniID.updatePwd({

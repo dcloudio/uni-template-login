@@ -14,6 +14,9 @@
 			"weixin" : {
 				"appid" : "weixin appid",
 				"appsecret" : "weixin appsecret"
+			},
+			"apple":	{
+				"bundleId": "your APP bundleId"
 			}
 		}
 	},
@@ -41,6 +44,7 @@
 			"smsSecret": "your sms secret"
 		},
 		"univerify": {
+			"appid":"your appid",
 			"apiKey": "your apiKey",
 			"apiSecret": "your apiSecret"
 		}

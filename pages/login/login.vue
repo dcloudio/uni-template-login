@@ -39,6 +39,9 @@
 				<!-- #endif -->
 			</view>
 		</view>
+		<view class="oauth-row" v-if="hasProvider && !hasAppleLogin" v-bind:style="{top: (positionTop - 50) + 'px'}">
+			<text style="color: #C8C7CC;text-align: center;">暂无法使用苹果登录，请查阅&nbsp;&nbsp;<a style="color: #C8C7CC;" href="https://ask.dcloud.net.cn/article/36651">Apple登录集成教程</a></text>
+		</view>
 	</view>
 </template>
 
@@ -71,7 +74,8 @@
 				positionTop: 0,
 				isDevtools: false,
 				codeDuration: 0,
-				loginBtnLoading: false
+				loginBtnLoading: false,
+				hasAppleLogin: false
 			}
 		},
 		computed: mapState(['forcedLogin', 'hasLogin', 'univerifyErrorMsg', 'hideUniverify']),
@@ -95,6 +99,9 @@
 					service: 'oauth',
 					success: (res) => {
 						if (res.provider && res.provider.length) {
+							if (res.provider.indexOf('apple') !== -1) {
+								this.hasAppleLogin = true;
+							}
 							for (let i = 0; i < res.provider.length; i++) {
 								const curProvider = res.provider[i];
 								if (~filters.indexOf(curProvider)) {
@@ -353,6 +360,10 @@
 				});
 			},
 			toLogin(value) {
+				if (value === 'apple') {
+					this.loginByApple(value)
+					return;
+				}
 				if (value === 'weixin') {
 					this.loginByWeixin(value)
 					return;
@@ -423,6 +434,72 @@
 						content: '微信登录失败，请稍后再试'
 					})
 				})
+			},
+			async loginByApple(value) {
+				if (!this.hasAppleLogin) {
+					uni.showModal({
+						showCancel: false,
+						content: `暂无法使用苹果登录，Apple登录集成教程：\nhttps://ask.dcloud.net.cn/article/36651`
+					})
+					return
+				};
+				let Provider = value;
+				const [loginErr, loginData] = await uni.login({
+					provider: Provider
+				});
+				if (loginErr) {
+					uni.showModal({
+						showCancel: false,
+						content: '苹果登录失败，请稍后再试'
+					})
+					return;
+				}
+				// 获取用户信息
+				const [getUserInfoErr, result] = await uni.getUserInfo({
+					provider: Provider
+				});
+				if (getUserInfoErr) {
+					let content = getUserInfoErr.errMsg;
+					if (~content.indexOf('uni.login')) {
+						content = '请先完成登录操作';
+					}
+					uni.showModal({
+						title: '获取用户信息失败',
+						content: '错误原因' + content,
+						showCancel: false
+					});
+					return;
+				}
+				// uni-id 苹果登录
+				uniCloud.callFunction({
+					name: 'user-center',
+					data: {
+						action: 'loginByApple',
+						params: result.userInfo
+					},
+					success: (e) => {
+						console.log('loginByApple success', e);
+						if (!e.success) {
+							uni.showModal({
+								showCancel: false,
+								content: JSON.stringify(e.message)
+							})
+							return;
+						}
+						const username = e.result.username || e.result.nickname;
+
+						uni.setStorageSync('uni_id_token', e.result.token)
+						uni.setStorageSync('login_type', 'online')
+
+						this.toMain(username);
+					},
+					fail: (e) => {
+						uni.showModal({
+							content: `苹果登录失败: ${JSON.stringify(e)}`,
+							showCancel: false
+						})
+					}
+				})
 			}
 		},
 		onReady() {
@@ -472,7 +549,9 @@
 	.oauth-row {
 		display: flex;
 		flex-direction: row;
-		justify-content: center;
+		align-items: center;
+		justify-content: space-around;
+		flex-wrap: wrap;
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -485,7 +564,6 @@
 		height: 50px;
 		border: 1px solid #dddddd;
 		border-radius: 50px;
-		margin: 0 20px;
 		background-color: #ffffff;
 	}
 
