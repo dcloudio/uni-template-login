@@ -1,0 +1,13 @@
+{
+  "name": "uni-captcha",
+  "version": "0.0.1",
+  "description": "uni-captcha",
+  "main": "index.js",
+  "homepage": "https://uniapp.dcloud.io/uniCloud/uni-captcha",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitee.com/dcloud/uni-captcha.git"
+  },
+  "author": "DCloud",
+  "license": "Apache-2.0"
+}

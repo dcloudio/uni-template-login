@@ -20,9 +20,17 @@
 				<text class="title">账号：</text>
 				<m-input class="m-input" type="text" clearable focus v-model="username" placeholder="请输入账号"></m-input>
 			</view>
-			<view class="input-row">
+			<view class="input-row border">
 				<text class="title">密码：</text>
 				<m-input type="password" displayable v-model="password" placeholder="请输入密码"></m-input>
+			</view>
+			<view v-if="needCaptcha" class="input-row">
+				<text class="title">验证码：</text>
+				<m-input type="text" v-model="captchaText" placeholder="请输入验证码"></m-input>
+				<view class="send-code-btn captcha-view" @click="captcha('refreshCaptcha')">
+					<i v-if="captchaing" class="uni-icon_toast uni-loading"></i>
+					<img v-if="!captchaing" :src="captchaBase64" width="100%" height="100%"></img>
+				</view>
 			</view>
 		</view>
 		<view class="btn-row">
@@ -39,8 +47,10 @@
 				<!-- #endif -->
 			</view>
 		</view>
-		<view class="oauth-row" v-if="hasProvider && !hasAppleLogin" v-bind:style="{top: (positionTop - 50) + 'px'}">
-			<text style="color: #C8C7CC;text-align: center;">暂无法使用苹果登录，请查阅&nbsp;&nbsp;<a style="color: #C8C7CC;" href="https://ask.dcloud.net.cn/article/36651">Apple登录集成教程</a></text>
+		<view class="oauth-row" v-if="hasProvider && !hasAppleLogin && platform ==='ios'" v-bind:style="{top: (positionTop - 50) + 'px'}">
+			<text style="color: #C8C7CC;text-align: center;">暂无法使用苹果登录，请查阅&nbsp;&nbsp;
+				<text style="color: #C8C7CC;text-decoration: underline;" @click="openAppleLoginDoc">Apple登录集成教程</text>
+			</text>
 		</view>
 	</view>
 </template>
@@ -55,6 +65,14 @@
 		univerifyLogin,
 		univerifyErrorHandler
 	} from '@/common/univerify.js'
+	import {
+		getDeviceUUID
+	} from '@/common/utils.js'
+
+	const captchaOptions = {
+		device_uuid: getDeviceUUID(),
+		scene: 'login'
+	}
 
 	let weixinAuthService
 	export default {
@@ -63,6 +81,7 @@
 		},
 		data() {
 			return {
+				platform: uni.getSystemInfoSync().platform,
 				loginType: 0,
 				loginTypeList: ['免密登录', '密码登录'],
 				mobile: '',
@@ -75,7 +94,11 @@
 				isDevtools: false,
 				codeDuration: 0,
 				loginBtnLoading: false,
-				hasAppleLogin: false
+				hasAppleLogin: false,
+				needCaptcha: uni.getStorageSync('uni-needCaptcha'),
+				captchaing: false,
+				captchaBase64: '',
+				captchaText: ''
 			}
 		},
 		computed: mapState(['forcedLogin', 'hasLogin', 'univerifyErrorMsg', 'hideUniverify']),
@@ -90,6 +113,10 @@
 				}
 			});
 			// #endif
+			console.log("uni.getSystemInfoSync(): ", uni.getSystemInfoSync());
+			if (this.needCaptcha) {
+				this.captcha('createCaptcha')
+			}
 		},
 		methods: {
 			...mapMutations(['login']),
@@ -181,7 +208,7 @@
 					}
 				})
 			},
-			loginByPwd() {
+			async loginByPwd() {
 				/**
 				 * 客户端对账号信息进行一些必要的校验。
 				 * 实际开发中，根据业务需要进行处理，这里仅做示例。
@@ -202,9 +229,10 @@
 				}
 				const data = {
 					username: this.username,
-					password: this.password
+					password: this.password,
+					captcha: this.captchaText,
+					...captchaOptions
 				};
-				let _self = this;
 				this.loginBtnLoading = true
 				uniCloud.callFunction({
 					name: 'user-center',
@@ -213,23 +241,27 @@
 						params: data
 					},
 					success: (e) => {
-
-						console.log('login success', e);
-
 						if (e.result.code == 0) {
+							this.needCaptcha = false;
+							uni.setStorageSync('uni-needCaptcha', this.needCaptcha)
+
 							uni.setStorageSync('uni_id_token', e.result.token)
 							uni.setStorageSync('username', e.result.username)
 							uni.setStorageSync('login_type', 'online')
 							uni.setStorageSync('uni_id_has_pwd', true)
-							_self.toMain(_self.username);
+							this.toMain(this.username);
 						} else {
 							uni.showModal({
-								content: e.result.msg,
+								content: e.result.message,
 								showCancel: false
 							})
-							console.log('登录失败', e);
-						}
 
+							this.needCaptcha = e.result.needCaptcha;
+							uni.setStorageSync('uni-needCaptcha', this.needCaptcha)
+							if (this.needCaptcha) {
+								this.captcha('createCaptcha')
+							}
+						}
 					},
 					fail: (e) => {
 						uni.showModal({
@@ -257,7 +289,6 @@
 					});
 					return;
 				}
-				let _self = this;
 
 				uniCloud.callFunction({
 					name: 'user-center',
@@ -277,7 +308,7 @@
 							uni.setStorageSync('uni_id_token', e.result.token)
 							uni.setStorageSync('username', username)
 							uni.setStorageSync('login_type', 'online')
-							_self.toMain(username);
+							this.toMain(username);
 						} else {
 							uni.showModal({
 								content: e.result.msg,
@@ -500,6 +531,41 @@
 						})
 					}
 				})
+			},
+			async captcha(action, args) {
+				if (this.captchaing) return;
+
+				// 验证不loading
+				this.captchaing = true;
+
+				let {
+					result: res
+				} = await uniCloud.callFunction({
+					name: 'user-center',
+					data: {
+						action,
+						params: {
+							...captchaOptions,
+							...args
+						}
+					}
+				})
+				this.captchaing = false;
+				if (res.code === 0) {
+					this.captchaBase64 = res.captchaBase64
+				} else {
+					uni.showToast({
+						icon: 'none',
+						title: res.message,
+						duration: 1000
+					})
+				}
+				return res;
+			},
+			openAppleLoginDoc() {
+				// #ifdef APP-PLUS
+				plus.webview.open('https://ask.dcloud.net.cn/article/36651')
+				// #endif
 			}
 		},
 		onReady() {
@@ -580,5 +646,14 @@
 		width: 100%;
 		height: 100%;
 		opacity: 0;
+	}
+
+	.captcha-view {
+		line-height: 0;
+		justify-content: center;
+		align-items: center;
+		display: flex;
+		position: relative;
+		background-color: #f3f3f3;
 	}
 </style>

@@ -139,6 +139,7 @@
 		flex-direction: row;
 		position: relative;
 		/* font-size: 18px; */
+		height: 40px;
 		line-height: 40px;
 	}
 
