@@ -70,7 +70,7 @@
 	} from '@/common/utils.js'
 
 	const captchaOptions = {
-		device_uuid: getDeviceUUID(),
+		deviceId: getDeviceUUID(),
 		scene: 'login'
 	}
 

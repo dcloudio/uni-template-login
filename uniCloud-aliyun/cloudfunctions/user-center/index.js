@@ -13,7 +13,7 @@ exports.main = async (event, context) => {
 		const now = Date.now()
 		const uniIdLogCollection = db.collection('uni-id-log')
 		let logData = {
-			device_uuid: params.device_uuid || this.CLIENTUUID,
+			deviceId: params.deviceId || this.DEVICEID,
 			ip: params.ip || this.CLIENTIP,
 			type,
 			ua: this.CLIENTUA,
@@ -39,7 +39,7 @@ exports.main = async (event, context) => {
 
 		const uniIdLogCollection = db.collection('uni-id-log')
 		let recentRecord = await uniIdLogCollection.where({
-				device_uuid: params.device_uuid || this.CLIENTUUID,
+				deviceId: params.deviceId || this.DEVICEID,
 				create_date: dbCmd.gt(now - recordDate),
 				type: 'login'
 			})

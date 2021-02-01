@@ -1,8 +1,8 @@
 export function getDeviceUUID() {
-	let uuid = uni.getStorageSync('uni_uuid') ||
-		uni.getSystemInfoSync().uuid ||
+	let deviceId = uni.getStorageSync('uni_deviceId') ||
+		uni.getSystemInfoSync().deviceId ||
 		uni.getSystemInfoSync().system + '_' + Math.random().toString(36).substr(2);
 
-	uni.setStorageSync('uni_uuid', uuid)
-	return uuid;
+	uni.setStorageSync('uni_deviceId', deviceId)
+	return deviceId;
 }

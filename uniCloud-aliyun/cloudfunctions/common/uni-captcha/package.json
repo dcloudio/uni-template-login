@@ -1,12 +1,12 @@
 {
   "name": "uni-captcha",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "uni-captcha",
   "main": "index.js",
-  "homepage": "https://uniapp.dcloud.io/uniCloud/uni-captcha",
+  "homepage": "https://ext.dcloud.net.cn/plugin?id=4048",
   "repository": {
     "type": "git",
-    "url": "git+https://gitee.com/dcloud/uni-captcha.git"
+    "url": "git+https://gitee.com/dcloud/uni-captcha"
   },
   "author": "DCloud",
   "license": "Apache-2.0"
