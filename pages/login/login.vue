@@ -69,12 +69,12 @@
 		getDeviceUUID
 	} from '@/common/utils.js'
 
+	let weixinAuthService;
 	const captchaOptions = {
 		deviceId: getDeviceUUID(),
 		scene: 'login'
 	}
 
-	let weixinAuthService
 	export default {
 		components: {
 			mInput
@@ -113,7 +113,6 @@
 				}
 			});
 			// #endif
-			console.log("uni.getSystemInfoSync(): ", uni.getSystemInfoSync());
 			if (this.needCaptcha) {
 				this.captcha('createCaptcha')
 			}

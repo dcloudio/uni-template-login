@@ -6,11 +6,10 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"uni-captcha": "file:../common/uni-captcha",
-		"uni-id": "file:../common/uni-id"
+		"uni-captcha": "file:../../../uni_modules/uni-captcha/uniCloud/cloudfunctions/common/uni-captcha",
+		"uni-id": "file:../../../uni_modules/uni-id/uniCloud/cloudfunctions/common/uni-id"
 	}
 }
