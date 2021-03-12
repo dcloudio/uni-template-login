@@ -43,7 +43,7 @@
 			<view class="oauth-image" v-for="provider in providerList" :key="provider.value">
 				<image :src="provider.image" @tap="toLogin(provider.value)"></image>
 				<!-- #ifdef MP-WEIXIN -->
-				<button v-if="!isDevtools" open-type="getUserInfo" @getuserinfo="getUserInfo"></button>
+				<button open-type="getUserInfo" @getuserinfo="getUserInfo"></button>
 				<!-- #endif -->
 			</view>
 		</view>
