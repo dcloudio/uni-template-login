@@ -1,16 +1,13 @@
 {
-  "id": "uni-id",
-  "displayName": "uni-id",
-  "version": "3.0.12",
-  "description": "简单、统一、可扩展的用户中心",
+  "id": "uni-config-center",
+  "displayName": "uni-config-center",
+  "version": "0.0.1",
+  "description": "uniCloud 配置中心",
   "keywords": [
-    "uniid",
-    "uni-id",
-    "用户管理",
-    "用户中心",
-    "短信验证码"
+    "配置",
+    "配置中心"
 ],
-  "repository": "https://gitee.com/dcloud/uni-id.git",
+  "repository": "",
   "engines": {
     "HBuilderX": "^3.1.0"
   },
@@ -21,10 +18,10 @@
     ],
     "sale": {
       "regular": {
-        "price": "0.00"
+        "price": 0
       },
       "sourcecode": {
-        "price": "0.00"
+        "price": 0
       }
     },
     "contact": {
@@ -37,8 +34,11 @@
     },
     "npmurl": ""
   },
+  "directories": {
+    "example": "../../../scripts/dist"
+  },
   "uni_modules": {
-    "dependencies": ["uni-config-center"],
+    "dependencies": [],
     "encrypt": [],
     "platforms": {
       "cloud": {

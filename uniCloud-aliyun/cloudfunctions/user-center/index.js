@@ -6,6 +6,9 @@ const db = uniCloud.database()
 const dbCmd = db.command
 
 exports.main = async (event, context) => {
+  const uniIDIns = uniID.createInstance({
+    context
+  })
 	let params = event.params || {}
 	
 	// 登录记录
@@ -69,7 +72,7 @@ exports.main = async (event, context) => {
 				msg: '缺少token'
 			}
 		}
-		payload = await uniID.checkToken(event.uniIdToken)
+		payload = await uniIDIns.checkToken(event.uniIdToken)
 		if (payload.code && payload.code > 0) {
 			return payload
 		}
@@ -80,7 +83,7 @@ exports.main = async (event, context) => {
 
 	switch (event.action) {
 		case 'register':
-			res = await uniID.register(params);
+			res = await uniIDIns.register(params);
 			break;
 		case 'login':
 			let passed = false;
@@ -92,7 +95,7 @@ exports.main = async (event, context) => {
 			}
 			
 			if (!needCaptcha || passed) {
-				res = await uniID.login(params);
+				res = await uniIDIns.login(params);
 				await loginLog(res);
 				needCaptcha = await getNeedCaptcha();
 			}
@@ -100,14 +103,14 @@ exports.main = async (event, context) => {
 			res.needCaptcha = needCaptcha;
 			break;
 		case 'loginByWeixin':
-			res = await uniID.loginByWeixin(params);
+			res = await uniIDIns.loginByWeixin(params);
 			loginLog(res)
 			break;
 		case 'checkToken':
-			res = await uniID.checkToken(event.uniIdToken);
+			res = await uniIDIns.checkToken(event.uniIdToken);
 			break;
 		case 'logout':
-			res = await uniID.logout(event.uniIdToken)
+			res = await uniIDIns.logout(event.uniIdToken)
 			break;
 		case 'sendSmsCode':
 			// 简单限制一下客户端调用频率
@@ -130,7 +133,7 @@ exports.main = async (event, context) => {
 			}
 			const randomStr = '00000' + Math.floor(Math.random() * 1000000)
 			const code = randomStr.substring(randomStr.length - 6)
-			res = await uniID.sendSmsCode({
+			res = await uniIDIns.sendSmsCode({
 				mobile: params.mobile,
 				code,
 				type: params.type,
@@ -150,7 +153,7 @@ exports.main = async (event, context) => {
 					msg: '手机号码填写错误'
 				}
 			}
-			res = await uniID.loginBySms(params)
+			res = await uniIDIns.loginBySms(params)
 			loginLog(res)
 			break;
 		case 'inviteLogin':
@@ -160,13 +163,13 @@ exports.main = async (event, context) => {
 					msg: '请填写验证码'
 				}
 			}
-			res = await uniID.loginBySms({
+			res = await uniIDIns.loginBySms({
 				...params,
 				type: 'register'
 			})
 			break;
 		case 'getInviteCode':
-			res = await uniID.getUserInfo({
+			res = await uniIDIns.getUserInfo({
 				uid: params.uid,
 				field: ['my_invite_code']
 			})
@@ -176,17 +179,17 @@ exports.main = async (event, context) => {
 			}
 			break;
 		case 'getInvitedUser':
-			res = await uniID.getInvitedUser(params)
+			res = await uniIDIns.getInvitedUser(params)
 			break;
 		case 'loginByUniverify':
-			res = await uniID.loginByUniverify(params)
+			res = await uniIDIns.loginByUniverify(params)
 			break;
 		case 'loginByApple':
-			res = await uniID.loginByApple(params)
+			res = await uniIDIns.loginByApple(params)
 			loginLog(res)
 			break;
 		case 'updatePwd':
-			res = await uniID.updatePwd({
+			res = await uniIDIns.updatePwd({
 				uid: params.uid,
 				...params
 			})
