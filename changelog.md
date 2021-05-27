@@ -1,3 +1,5 @@
+## 0.2.23（2021-05-27）
+- 升级uni-id到3.1.0版本，默认对邮箱、用户名忽略大小写 [详情](https://uniapp.dcloud.net.cn/uniCloud/uni-id?id=case-sensitive)
 ## 0.2.22（2021-04-13）
 - 升级uni-id到3.0.12版本，去除bindTokenToDevice配置
 ## 0.2.21（2021-04-13）

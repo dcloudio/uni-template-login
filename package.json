@@ -1,7 +1,7 @@
 {
 	"id": "uni-template-login",
 	"displayName": "云端一体登录模板",
-	"version": "0.2.22",
+	"version": "0.2.23",
 	"description": "登录模板，已集成uni-id、uni-captcha",
 	"keywords": [
         "登录",
