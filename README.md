@@ -6,9 +6,6 @@
 
 基于 uni-app & uniCloud 的前后一体登录模板
 
-![](https://img-cdn-qiniu.dcloud.net.cn/7E6B79E2-B469-4CF3-8F4D-7502E72C4CB8.png?imageView2/0/w/375)
-![](https://img-cdn-qiniu.dcloud.net.cn/659AE293-95F8-46E1-AC1F-D62FE3B080DB.png?imageView2/0/w/375)
-
 ## 快速体验
 
 手机扫码体验：
