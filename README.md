@@ -1,5 +1,5 @@
 
-**注意：该项目已暂停维护，推荐使用功能更完善的[uni-starter](https://gitcode.net/dcloud/uni-starter)**
+**注意：该项目已暂停维护，推荐使用功能更完善的[[uni-starter](https://github.com/dcloudio/uni-starter)**
 
 
 # uni-template-login
